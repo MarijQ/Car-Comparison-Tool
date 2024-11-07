@@ -29,8 +29,8 @@ class CargiantSpider(scrapy.Spider):
         # Collect all items from details section on page
         details = {}
         for item in response.css('li.details-panel-item__list__item'):
-            key = item.css('span::text').get()
-            value = item.css('span::text').getall()[1].strip()
+            key = item.css('span::text').get() # get first one
+            value = item.css('span::text').getall()[1].strip() # get all and pick 2nd
             details[key] = value
 
         # Extract the required metrics from the details dictionary
@@ -41,7 +41,7 @@ class CargiantSpider(scrapy.Spider):
         output["Body"] = details.get('Body Type')
 
         # Request the Performance tab dynamically through Splash
-        performance_tab_url = response.urljoin("#tab1")  # This is hypothetical. Adjust if needed
+        performance_tab_url = response.urljoin("#tab1")
         yield SplashRequest(
             performance_tab_url,
             self.parse_performance,
@@ -54,7 +54,7 @@ class CargiantSpider(scrapy.Spider):
         output = response.meta.get('output', {})
 
         # Extract CC and Engine Power BHP from Performance tab
-        cc = response.css("td:contains('CC') + td::text").get()
+        cc = response.css("td:contains('CC') + td::text").get() # contains=looks for text, "+"=next adjacent element
         bhp = response.css("td:contains('Engine Power - BHP') + td::text").get()
 
         # Convert CC to litres
