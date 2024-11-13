@@ -45,7 +45,7 @@ class CargiantSpider(scrapy.Spider):
         yield SplashRequest(
             performance_tab_url,
             self.parse_performance,
-            args={'wait': 1},
+            args={'wait': 1.5},
             meta={'output': output}  # Pass the current output down
         )
 
