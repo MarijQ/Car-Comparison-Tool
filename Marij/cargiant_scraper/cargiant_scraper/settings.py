@@ -17,7 +17,7 @@ NEWSPIDER_MODULE = "cargiant_scraper.spiders"
 #USER_AGENT = "cargiant_scraper (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -54,6 +54,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_splash.SplashCookiesMiddleware': 723,
     'scrapy_splash.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+    'cargiant_scraper.middlewares.SeleniumMiddleware': 543,
 }
 
 # Enable or disable extensions
@@ -96,3 +97,5 @@ FEED_EXPORT_ENCODING = "utf-8"
 
 DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 SPLASH_URL = 'http://localhost:8050'
+
+LOG_LEVEL = 'INFO'  # Set this to 'ERROR' if you only want to see errors.

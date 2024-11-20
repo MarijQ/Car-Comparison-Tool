@@ -2,7 +2,7 @@ import scrapy
 from scrapy_splash import SplashRequest
 
 class CargiantSpider(scrapy.Spider):
-    name = 'cargiant'
+    name = 'cargiant_old'
     start_urls = [
         'https://www.cargiant.co.uk/car/Toyota/Corolla/WK20VWW'
     ]
