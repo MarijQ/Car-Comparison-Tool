@@ -9,6 +9,8 @@
 
 BOT_NAME = "carwow_scrape"
 
+OFFSITE_ENABLED = False
+
 SPIDER_MODULES = ["carwow_scrape.spiders"]
 NEWSPIDER_MODULE = "carwow_scrape.spiders"
 
