@@ -1,0 +1,1196 @@
+##### FILE: ./temp_urls.json
+==================================================
+["https://www.cargiant.co.uk/car/Tesla/Model-X/LG67KKU", "https://www.cargiant.co.uk/car/Vauxhall/Astra/WP20CKK", "https://www.cargiant.co.uk/car/Audi/A3/LO21HUV", "https://www.cargiant.co.uk/car/Mini/Countryman/OW19YCZ", "https://www.cargiant.co.uk/car/Volvo/XC40/FM68EOS", "https://www.cargiant.co.uk/car/KIA/Rio/FV18DNO", "https://www.cargiant.co.uk/car/Volkswagen/Touareg/BL68AVG", "https://www.cargiant.co.uk/car/Seat/Arona/RV69XPB", "https://www.cargiant.co.uk/car/Volvo/XC40/LB19EMV", "https://www.cargiant.co.uk/car/Land-Rover/Range-Rover-Evoque/AK20EYR", "https://www.cargiant.co.uk/car/BMW/X2/DL67YMH", "https://www.cargiant.co.uk/car/Mercedes/S-Class/PJ69ZZR", "https://www.cargiant.co.uk/car/Volkswagen/Touareg/PL18PHA", "https://www.cargiant.co.uk/car/Mercedes/A-Class/YF20LKZ", "https://www.cargiant.co.uk/car/Ford/Edge/ET19VJJ", "https://www.cargiant.co.uk/car/Seat/Leon/BP70EYU", "https://www.cargiant.co.uk/car/Citroen/C1/LA21WYF", "https://www.cargiant.co.uk/car/Renault/Captur/EY20OHN", "https://www.cargiant.co.uk/car/Vauxhall/Crossland-X/NRZ9125", "https://www.cargiant.co.uk/car/KIA/Sportage/YF19FSB", "https://www.cargiant.co.uk/car/Seat/Arona/AJ21EWK", "https://www.cargiant.co.uk/car/Toyota/Corolla/WK20VWW", "https://www.cargiant.co.uk/car/KIA/Niro/LM72ATF", "https://www.cargiant.co.uk/car/Seat/Ibiza/WJ22JXZ", "https://www.cargiant.co.uk/car/Skoda/Kodiaq/ND67NPP", "https://www.cargiant.co.uk/car/Audi/Q3/SW67OFN", "https://www.cargiant.co.uk/car/BMW/8-Series/YY20FCC"]
+
+
+##### FILE: ./scrapy.cfg
+==================================================
+# Automatically created by: scrapy startproject
+#
+# For more information about the [deploy] section see:
+# https://scrapyd.readthedocs.io/en/latest/deploy.html
+
+[settings]
+default = cargiant_scraper_2.settings
+
+[deploy]
+#url = http://localhost:6800/
+project = cargiant_scraper_2
+
+
+
+##### FILE: ./urls.json
+==================================================
+[
+  "https://www.cargiant.co.uk/car/Tesla/Model-X/LG67KKU",
+  "https://www.cargiant.co.uk/car/Vauxhall/Astra/WP20CKK",
+  "https://www.cargiant.co.uk/car/Audi/A3/LO21HUV",
+  "https://www.cargiant.co.uk/car/Mini/Countryman/OW19YCZ",
+  "https://www.cargiant.co.uk/car/Volvo/XC40/FM68EOS",
+  "https://www.cargiant.co.uk/car/KIA/Rio/FV18DNO",
+  "https://www.cargiant.co.uk/car/Volkswagen/Touareg/BL68AVG",
+  "https://www.cargiant.co.uk/car/Seat/Arona/RV69XPB",
+  "https://www.cargiant.co.uk/car/Volvo/XC40/LB19EMV",
+  "https://www.cargiant.co.uk/car/Land-Rover/Range-Rover-Evoque/AK20EYR",
+  "https://www.cargiant.co.uk/car/BMW/X2/DL67YMH",
+  "https://www.cargiant.co.uk/car/Mercedes/S-Class/PJ69ZZR",
+  "https://www.cargiant.co.uk/car/Volkswagen/Touareg/PL18PHA",
+  "https://www.cargiant.co.uk/car/Mercedes/A-Class/YF20LKZ",
+  "https://www.cargiant.co.uk/car/Ford/Edge/ET19VJJ",
+  "https://www.cargiant.co.uk/car/Seat/Leon/BP70EYU",
+  "https://www.cargiant.co.uk/car/Citroen/C1/LA21WYF",
+  "https://www.cargiant.co.uk/car/Renault/Captur/EY20OHN",
+  "https://www.cargiant.co.uk/car/Vauxhall/Crossland-X/NRZ9125",
+  "https://www.cargiant.co.uk/car/KIA/Sportage/YF19FSB",
+  "https://www.cargiant.co.uk/car/Seat/Arona/AJ21EWK",
+  "https://www.cargiant.co.uk/car/Toyota/Corolla/WK20VWW",
+  "https://www.cargiant.co.uk/car/KIA/Niro/LM72ATF",
+  "https://www.cargiant.co.uk/car/Seat/Ibiza/WJ22JXZ",
+  "https://www.cargiant.co.uk/car/Skoda/Kodiaq/ND67NPP",
+  "https://www.cargiant.co.uk/car/Audi/Q3/SW67OFN",
+  "https://www.cargiant.co.uk/car/BMW/8-Series/YY20FCC"
+]
+
+
+##### FILE: ./cargiant_scraper_2/spiders/catalogue.py
+==================================================
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy.http import HtmlResponse
+import logging
+import time
+
+class CargiantSpider(scrapy.Spider):
+    name = "master"
+    start_urls = ['https://www.cargiant.co.uk/search/all/all']
+
+    def __init__(self, *args, **kwargs):
+        super(CargiantSpider, self).__init__(*args, **kwargs)
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        self.driver = webdriver.Chrome(options=chrome_options)
+    
+    def parse(self, response):
+        self.driver.get(response.url)
+
+        for page_num in range(5):  # change number of pages
+            self.logger.info(f"Processing page {page_num + 1}")
+            
+            # Wait for the listings to load
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-vehicle]'))
+                )
+            except Exception as e:
+                self.logger.error(f"Error loading listings: {e}")
+                break
+
+            # Grab the current HTML source
+            body = self.driver.page_source
+            response_obj = HtmlResponse(
+                url=self.driver.current_url,
+                body=body,
+                encoding='utf-8',
+            )
+
+            # Parse car listing links
+            listings = response_obj.css('a.car-listing-item__details')
+            if not listings:
+                self.logger.warning("No listings found!")
+
+            for listing in listings:
+                car_url = listing.attrib.get('href')
+                if car_url:
+                    # Construct the absolute URL
+                    full_url = f"https://www.cargiant.co.uk{car_url}"
+                    yield {
+                        'url': full_url,
+                    }
+                else:
+                    self.logger.warning("No URL found in a listing.")
+            
+            # Handle pagination by clicking the "Next" button
+            try:
+                next_button = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a.paging__item--next'))
+                )
+                self.driver.execute_script("arguments[0].click();", next_button)
+                time.sleep(2)  # Allow time for the next page to load
+            except Exception as e:
+                self.logger.error(f"Error clicking next button: {e}")
+                break
+
+    def closed(self, reason):
+        self.driver.quit()
+
+
+
+##### FILE: ./cargiant_scraper_2/spiders/master.py
+==================================================
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy.http import HtmlResponse
+import json
+import os
+import time
+import subprocess  # Required for calling the second spider dynamically
+
+class CargiantSpider(scrapy.Spider):
+    name = "master"
+    start_urls = ['https://www.cargiant.co.uk/search/all/all']
+
+    def __init__(self, *args, **kwargs):
+        super(CargiantSpider, self).__init__(*args, **kwargs)
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        self.driver = webdriver.Chrome(options=chrome_options)
+        self.urls_file = "urls.json"
+        self.results_file = "results.json"
+
+        # Delete old files if they exist
+        if os.path.exists(self.urls_file):
+            os.remove(self.urls_file)
+        if os.path.exists(self.results_file):
+            os.remove(self.results_file)
+
+    def parse(self, response):
+        self.driver.get(response.url)
+
+        all_urls = []  # Save all the car listing URLs
+
+        for page_num in range(1):  # Adjust number of pages as needed
+            self.logger.info(f"Processing page {page_num + 1}")
+
+            # Wait for the listings to load
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-vehicle]'))
+                )
+            except Exception as e:
+                self.logger.error(f"Error loading listings: {e}")
+                break
+
+            # Grab the current HTML source
+            body = self.driver.page_source
+            response_obj = HtmlResponse(
+                url=self.driver.current_url,
+                body=body,
+                encoding='utf-8',
+            )
+
+            # Parse car listing links
+            listings = response_obj.css('a.car-listing-item__details')
+            if not listings:
+                self.logger.warning("No listings found!")
+
+            for listing in listings:
+                car_url = listing.attrib.get('href')
+                if car_url:
+                    # Construct the absolute URL
+                    full_url = f"https://www.cargiant.co.uk{car_url}"
+                    all_urls.append(full_url)
+                else:
+                    self.logger.warning("No URL found in a listing.")
+
+            # Handle pagination by clicking the "Next" button
+            try:
+                next_button = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a.paging__item--next'))
+                )
+                self.driver.execute_script("arguments[0].click();", next_button)
+                time.sleep(2)  # Allow time for the next page to load
+            except Exception as e:
+                self.logger.error(f"Error clicking next button: {e}")
+                break
+
+        # Save all URLS to urls.json
+        self.logger.info(f"Found {len(all_urls)} URLs in total.")
+        self.save_urls_to_json(all_urls)
+
+        # Call the individual listing spider for each URL
+        self.crawl_ind_listing(all_urls)
+
+    def save_urls_to_json(self, urls):
+        """Save all collected URLs to a JSON file."""
+        try:
+            with open(self.urls_file, 'w') as f:
+                json.dump(urls, f, indent=2)
+            self.logger.info(f"Saved {len(urls)} URLs to {self.urls_file}.")
+        except Exception as e:
+            self.logger.error(f"Error saving URLs to file: {e}")
+
+    def crawl_ind_listing(self, urls):
+        """Run the 'ind_listing' spider once with all URLs."""
+        # Write all URLs to a temporary file
+        temp_urls_file = 'temp_urls.json'
+        with open(temp_urls_file, 'w') as f:
+            json.dump(urls, f)
+        try:
+            subprocess.run(
+                [
+                    "scrapy", "crawl", "ind_listing",
+                    "-a", f"urls_file={temp_urls_file}",
+                    "-o", self.results_file,
+                    "-t", "json"
+                ],
+                check=True,
+                cwd=os.path.dirname(os.path.abspath(__file__))  # Set the working directory
+            )
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"Error while running ind_listing spider: {e}")
+
+    def closed(self, reason):
+        self.driver.quit()
+
+
+
+##### FILE: ./cargiant_scraper_2/spiders/ind_listing.py
+==================================================
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import json
+import time
+
+class CargiantSpider(scrapy.Spider):
+    name = 'ind_listing'
+
+    def __init__(self, *args, **kwargs):
+        super(CargiantSpider, self).__init__(*args, **kwargs)
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        self.driver = webdriver.Chrome(options=chrome_options)
+
+        # Read URLs from the passed file
+        urls_file = kwargs.get('urls_file')
+        if urls_file:
+            with open(urls_file, 'r') as f:
+                self.start_urls = json.load(f)
+        else:
+            self.start_urls = []
+
+    def parse(self, response):
+        self.driver.get(response.url)
+        time.sleep(1)  # Wait for the page to load
+
+        # Initialize dictionary for output
+        output = {}
+
+        # Extract the title which includes both brand and model
+        try:
+            title_element = self.driver.find_element(By.CSS_SELECTOR, 'h1.title__main.set-h3')
+            title = title_element.text.strip()
+            title_parts = title.split(None, 1)  # Split into brand and model
+            output["brand"] = title_parts[0]
+            output["model"] = title_parts[1] if len(title_parts) > 1 else None
+        except Exception:
+            output["brand"] = None
+            output["model"] = None
+
+        # Extract price from top part
+        try:
+            price_element = self.driver.find_element(By.CSS_SELECTOR, 'div.price-block__price')
+            price = price_element.text.strip()
+            output["Price"] = price.replace('£', '').replace(',', '').strip()
+        except Exception:
+            output["Price"] = None
+
+        # Collect all items from details section on page
+        details = {}
+        try:
+            items = self.driver.find_elements(By.CSS_SELECTOR, 'li.details-panel-item__list__item')
+            for item in items:
+                spans = item.find_elements(By.CSS_SELECTOR, 'span')
+                if len(spans) >= 2:
+                    key = spans[0].text.strip()
+                    value = spans[1].text.strip()
+                    details[key] = value
+        except Exception:
+            pass
+
+        # Extract the required metrics from the details dictionary
+        output["Year"] = details.get('Year')
+        output["Mileage"] = details.get('Mileage')
+        output["Fuel"] = details.get('Fuel Type')
+        output["Transmission"] = details.get('Transmission')
+        output["Body"] = details.get('Body Type')
+
+        # Click on the Performance tab
+        try:
+            performance_tab = self.driver.find_element(By.CSS_SELECTOR, 'div[data-tab="tab1"]')
+            performance_tab.click()
+            time.sleep(1)  # Wait for the Performance tab to load
+
+            # Extract CC and Engine Power BHP from the Performance tab
+            cc = None
+            bhp = None
+            try:
+                # Locate the container for the performance table rows
+                performance_section = self.driver.find_element(By.CSS_SELECTOR, 'div.row-wrap__row.row.row--match-height')
+                
+                # Find all table rows in the performance section
+                rows = performance_section.find_elements(By.CSS_SELECTOR, 'tr')
+                for row in rows:
+                    try:
+                        # Locate key-value pairs in the table row
+                        key = row.find_element(By.CSS_SELECTOR, 'td.key').text.strip()  # Find the "key" cell
+                        value = row.find_element(By.CSS_SELECTOR, 'td.value').text.strip()  # Find the "value" cell
+
+                        if key == 'CC':
+                            cc = value
+                        elif key == 'Engine Power - BHP':
+                            bhp = value
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+            # Convert CC to litres
+            if cc:
+                try:
+                    output["litres"] = str(float(cc) / 1000)  # Convert to litres if CC is present
+                except ValueError:
+                    output["litres"] = None
+            else:
+                output["litres"] = None
+
+            # Store BHP
+            output["hp"] = bhp if bhp else None
+
+
+        except Exception:
+            output["litres"] = None
+            output["hp"] = None
+
+        # Yield the output dictionary
+        yield output
+
+    def closed(self, reason):
+        self.driver.quit()
+
+
+##### FILE: ./cargiant_scraper_2/spiders/__init__.py
+==================================================
+# This package will contain the spiders of your Scrapy project
+#
+# Please refer to the documentation for information on how to create and manage
+# your spiders.
+
+
+
+##### FILE: ./cargiant_scraper_2/middlewares.py
+==================================================
+import logging
+from selenium.webdriver.remote.remote_connection import LOGGER as selenium_logger
+from scrapy.http import HtmlResponse
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy import signals
+
+# Suppress unnecessary Selenium logs
+selenium_logger.setLevel(logging.WARNING)
+
+class SeleniumMiddleware:
+    def __init__(self):
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Run in headless mode
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")  # Required for some environments
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        middleware = cls()
+        crawler.signals.connect(middleware.spider_closed, signal=signals.spider_closed)
+        return middleware
+
+    def process_request(self, request, spider):
+        logging.info(f"Processing URL: {request.url}")
+        self.driver.get(request.url)
+
+        try:
+            # Wait until the target element is present
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-vehicle]"))
+            )
+        except Exception as e:
+            logging.error(f"Error loading page {request.url}: {e}")
+            return HtmlResponse(
+                url=self.driver.current_url,
+                status=500,
+                request=request,
+                body=f"Error loading page: {e}".encode('utf-8')
+            )
+
+        body = self.driver.page_source
+        return HtmlResponse(
+            url=self.driver.current_url,
+            body=body,
+            encoding='utf-8',
+            request=request
+        )
+
+    def spider_closed(self, spider):
+        logging.info("Closing Selenium WebDriver.")
+        self.driver.quit()
+
+
+
+##### FILE: ./cargiant_scraper_2/settings.py
+==================================================
+# Scrapy settings for cargiant_scraper_2 project
+
+BOT_NAME = "cargiant_scraper_2"
+
+SPIDER_MODULES = ["cargiant_scraper_2.spiders"]
+NEWSPIDER_MODULE = "cargiant_scraper_2.spiders"
+
+# Obey robots.txt rules
+ROBOTSTXT_OBEY = False
+
+# Enable or disable downloader middlewares
+DOWNLOADER_MIDDLEWARES = {
+    # 'cargiant_scraper_2.middlewares.SeleniumMiddleware': 543,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+}
+
+# Enable and configure HTTP caching (disabled by default)
+HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# Set settings whose default value is deprecated to a future-proof value
+REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+FEED_EXPORT_ENCODING = "utf-8"
+
+LOG_LEVEL = 'INFO'  # Set this to 'ERROR' if you only want to see errors.
+
+
+
+##### FILE: ./cargiant_scraper_2/pipelines.py
+==================================================
+# Define your item pipelines here
+#
+# Don't forget to add your pipeline to the ITEM_PIPELINES setting
+# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
+
+# useful for handling different item types with a single interface
+from itemadapter import ItemAdapter
+
+
+class CargiantScraperPipeline:
+    def process_item(self, item, spider):
+        return item
+
+
+
+##### FILE: ./cargiant_scraper_2/items.py
+==================================================
+# Define here the models for your scraped items
+#
+# See documentation in:
+# https://docs.scrapy.org/en/latest/topics/items.html
+
+import scrapy
+
+
+class CargiantScraperItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    pass
+
+
+
+##### FILE: ./cargiant_scraper_2/__init__.py
+==================================================
+
+
+
+##### FILE: ./cargiant_scraper_2/runfile.py
+==================================================
+import os
+from scrapy import cmdline
+
+# Ensure we are in the correct directory before running the Scrapy command
+# target_dir = './Marij/cargiant_scraper_2'
+# current_dir = os.getcwd()
+
+# if current_dir != os.path.abspath(target_dir):
+#     os.chdir(target_dir)
+
+# Execute the Scrapy command
+cmdline.execute("scrapy crawl master -O cargiant_data.json".split())
+
+
+
+##### FILE: ./cargiant_data.json
+==================================================
+[
+
+]
+
+
+.
+├── cargiant_data.json
+├── cargiant_scraper_2
+│   ├── __init__.py
+│   ├── items.py
+│   ├── middlewares.py
+│   ├── pipelines.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-310.pyc
+│   │   ├── __init__.cpython-313.pyc
+│   │   ├── middlewares.cpython-310.pyc
+│   │   ├── middlewares.cpython-313.pyc
+│   │   ├── settings.cpython-310.pyc
+│   │   └── settings.cpython-313.pyc
+│   ├── runfile.py
+│   ├── settings.py
+│   └── spiders
+│       ├── catalogue.py
+│       ├── ind_listing.py
+│       ├── __init__.py
+│       ├── master.py
+│       └── __pycache__
+│           ├── cargiant_spider.cpython-310.pyc
+│           ├── cargiant_spider.cpython-313.pyc
+│           ├── cargiant_spider_new.cpython-310.pyc
+│           ├── cargiant_spider_new.cpython-313.pyc
+│           ├── catalogue.cpython-310.pyc
+│           ├── ind_listing.cpython-310.pyc
+│           ├── __init__.cpython-310.pyc
+│           ├── __init__.cpython-313.pyc
+│           └── master.cpython-310.pyc
+├── combined_code.txt
+├── scrapy.cfg
+├── temp_urls.json
+└── urls.json
+
+4 directories, 30 files
+##### FILE: ./temp_urls.json
+==================================================
+["https://www.cargiant.co.uk/car/Tesla/Model-X/LG67KKU", "https://www.cargiant.co.uk/car/Vauxhall/Astra/WP20CKK", "https://www.cargiant.co.uk/car/Audi/A3/LO21HUV", "https://www.cargiant.co.uk/car/Mini/Countryman/OW19YCZ", "https://www.cargiant.co.uk/car/Volvo/XC40/FM68EOS", "https://www.cargiant.co.uk/car/KIA/Rio/FV18DNO", "https://www.cargiant.co.uk/car/Volkswagen/Touareg/BL68AVG", "https://www.cargiant.co.uk/car/Seat/Arona/RV69XPB", "https://www.cargiant.co.uk/car/Volvo/XC40/LB19EMV", "https://www.cargiant.co.uk/car/Land-Rover/Range-Rover-Evoque/AK20EYR", "https://www.cargiant.co.uk/car/BMW/X2/DL67YMH", "https://www.cargiant.co.uk/car/Mercedes/S-Class/PJ69ZZR", "https://www.cargiant.co.uk/car/Volkswagen/Touareg/PL18PHA", "https://www.cargiant.co.uk/car/Mercedes/A-Class/YF20LKZ", "https://www.cargiant.co.uk/car/Ford/Edge/ET19VJJ", "https://www.cargiant.co.uk/car/Seat/Leon/BP70EYU", "https://www.cargiant.co.uk/car/Citroen/C1/LA21WYF", "https://www.cargiant.co.uk/car/Renault/Captur/EY20OHN", "https://www.cargiant.co.uk/car/Vauxhall/Crossland-X/NRZ9125", "https://www.cargiant.co.uk/car/KIA/Sportage/YF19FSB", "https://www.cargiant.co.uk/car/Seat/Arona/AJ21EWK", "https://www.cargiant.co.uk/car/Toyota/Corolla/WK20VWW", "https://www.cargiant.co.uk/car/KIA/Niro/LM72ATF", "https://www.cargiant.co.uk/car/Seat/Ibiza/WJ22JXZ", "https://www.cargiant.co.uk/car/Skoda/Kodiaq/ND67NPP", "https://www.cargiant.co.uk/car/Audi/Q3/SW67OFN", "https://www.cargiant.co.uk/car/BMW/8-Series/YY20FCC"]
+
+
+##### FILE: ./combined_code.txt
+==================================================
+
+
+
+##### FILE: ./scrapy.cfg
+==================================================
+# Automatically created by: scrapy startproject
+#
+# For more information about the [deploy] section see:
+# https://scrapyd.readthedocs.io/en/latest/deploy.html
+
+[settings]
+default = cargiant_scraper_2.settings
+
+[deploy]
+#url = http://localhost:6800/
+project = cargiant_scraper_2
+
+
+
+##### FILE: ./urls.json
+==================================================
+[
+  "https://www.cargiant.co.uk/car/Tesla/Model-X/LG67KKU",
+  "https://www.cargiant.co.uk/car/Vauxhall/Astra/WP20CKK",
+  "https://www.cargiant.co.uk/car/Audi/A3/LO21HUV",
+  "https://www.cargiant.co.uk/car/Mini/Countryman/OW19YCZ",
+  "https://www.cargiant.co.uk/car/Volvo/XC40/FM68EOS",
+  "https://www.cargiant.co.uk/car/KIA/Rio/FV18DNO",
+  "https://www.cargiant.co.uk/car/Volkswagen/Touareg/BL68AVG",
+  "https://www.cargiant.co.uk/car/Seat/Arona/RV69XPB",
+  "https://www.cargiant.co.uk/car/Volvo/XC40/LB19EMV",
+  "https://www.cargiant.co.uk/car/Land-Rover/Range-Rover-Evoque/AK20EYR",
+  "https://www.cargiant.co.uk/car/BMW/X2/DL67YMH",
+  "https://www.cargiant.co.uk/car/Mercedes/S-Class/PJ69ZZR",
+  "https://www.cargiant.co.uk/car/Volkswagen/Touareg/PL18PHA",
+  "https://www.cargiant.co.uk/car/Mercedes/A-Class/YF20LKZ",
+  "https://www.cargiant.co.uk/car/Ford/Edge/ET19VJJ",
+  "https://www.cargiant.co.uk/car/Seat/Leon/BP70EYU",
+  "https://www.cargiant.co.uk/car/Citroen/C1/LA21WYF",
+  "https://www.cargiant.co.uk/car/Renault/Captur/EY20OHN",
+  "https://www.cargiant.co.uk/car/Vauxhall/Crossland-X/NRZ9125",
+  "https://www.cargiant.co.uk/car/KIA/Sportage/YF19FSB",
+  "https://www.cargiant.co.uk/car/Seat/Arona/AJ21EWK",
+  "https://www.cargiant.co.uk/car/Toyota/Corolla/WK20VWW",
+  "https://www.cargiant.co.uk/car/KIA/Niro/LM72ATF",
+  "https://www.cargiant.co.uk/car/Seat/Ibiza/WJ22JXZ",
+  "https://www.cargiant.co.uk/car/Skoda/Kodiaq/ND67NPP",
+  "https://www.cargiant.co.uk/car/Audi/Q3/SW67OFN",
+  "https://www.cargiant.co.uk/car/BMW/8-Series/YY20FCC"
+]
+
+
+##### FILE: ./cargiant_scraper_2/spiders/catalogue.py
+==================================================
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy.http import HtmlResponse
+import logging
+import time
+
+class CargiantSpider(scrapy.Spider):
+    name = "catalogue"
+    start_urls = ['https://www.cargiant.co.uk/search/all/all']
+
+    def __init__(self, *args, **kwargs):
+        super(CargiantSpider, self).__init__(*args, **kwargs)
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        self.driver = webdriver.Chrome(options=chrome_options)
+    
+    def parse(self, response):
+        self.driver.get(response.url)
+
+        for page_num in range(5):  # change number of pages
+            self.logger.info(f"Processing page {page_num + 1}")
+            
+            # Wait for the listings to load
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-vehicle]'))
+                )
+            except Exception as e:
+                self.logger.error(f"Error loading listings: {e}")
+                break
+
+            # Grab the current HTML source
+            body = self.driver.page_source
+            response_obj = HtmlResponse(
+                url=self.driver.current_url,
+                body=body,
+                encoding='utf-8',
+            )
+
+            # Parse car listing links
+            listings = response_obj.css('a.car-listing-item__details')
+            if not listings:
+                self.logger.warning("No listings found!")
+
+            for listing in listings:
+                car_url = listing.attrib.get('href')
+                if car_url:
+                    # Construct the absolute URL
+                    full_url = f"https://www.cargiant.co.uk{car_url}"
+                    yield {
+                        'url': full_url,
+                    }
+                else:
+                    self.logger.warning("No URL found in a listing.")
+            
+            # Handle pagination by clicking the "Next" button
+            try:
+                next_button = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a.paging__item--next'))
+                )
+                self.driver.execute_script("arguments[0].click();", next_button)
+                time.sleep(2)  # Allow time for the next page to load
+            except Exception as e:
+                self.logger.error(f"Error clicking next button: {e}")
+                break
+
+    def closed(self, reason):
+        self.driver.quit()
+
+
+
+##### FILE: ./cargiant_scraper_2/spiders/master.py
+==================================================
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy.http import HtmlResponse
+import json
+import os
+import time
+import subprocess  # Required for calling the second spider dynamically
+
+class CargiantSpider(scrapy.Spider):
+    name = "master"
+    start_urls = ['https://www.cargiant.co.uk/search/all/all']
+
+    def __init__(self, *args, **kwargs):
+        super(CargiantSpider, self).__init__(*args, **kwargs)
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        self.driver = webdriver.Chrome(options=chrome_options)
+        self.urls_file = "urls.json"
+        self.results_file = "results.json"
+
+        # Delete old files if they exist
+        if os.path.exists(self.urls_file):
+            os.remove(self.urls_file)
+        if os.path.exists(self.results_file):
+            os.remove(self.results_file)
+
+    def parse(self, response):
+        self.driver.get(response.url)
+
+        all_urls = []  # Save all the car listing URLs
+
+        for page_num in range(1):  # Adjust number of pages as needed
+            self.logger.info(f"Processing page {page_num + 1}")
+
+            # Wait for the listings to load
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-vehicle]'))
+                )
+            except Exception as e:
+                self.logger.error(f"Error loading listings: {e}")
+                break
+
+            # Grab the current HTML source
+            body = self.driver.page_source
+            response_obj = HtmlResponse(
+                url=self.driver.current_url,
+                body=body,
+                encoding='utf-8',
+            )
+
+            # Parse car listing links
+            listings = response_obj.css('a.car-listing-item__details')
+            if not listings:
+                self.logger.warning("No listings found!")
+
+            for listing in listings:
+                car_url = listing.attrib.get('href')
+                if car_url:
+                    # Construct the absolute URL
+                    full_url = f"https://www.cargiant.co.uk{car_url}"
+                    all_urls.append(full_url)
+                else:
+                    self.logger.warning("No URL found in a listing.")
+
+            # Handle pagination by clicking the "Next" button
+            try:
+                next_button = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a.paging__item--next'))
+                )
+                self.driver.execute_script("arguments[0].click();", next_button)
+                time.sleep(2)  # Allow time for the next page to load
+            except Exception as e:
+                self.logger.error(f"Error clicking next button: {e}")
+                break
+
+        # Save all URLS to urls.json
+        self.logger.info(f"Found {len(all_urls)} URLs in total.")
+        self.save_urls_to_json(all_urls)
+
+        # Call the individual listing spider for each URL
+        self.crawl_ind_listing(all_urls)
+
+    def save_urls_to_json(self, urls):
+        """Save all collected URLs to a JSON file."""
+        try:
+            with open(self.urls_file, 'w') as f:
+                json.dump(urls, f, indent=2)
+            self.logger.info(f"Saved {len(urls)} URLs to {self.urls_file}.")
+        except Exception as e:
+            self.logger.error(f"Error saving URLs to file: {e}")
+
+    def crawl_ind_listing(self, urls):
+        """Run the 'ind_listing' spider once with all URLs."""
+        # Write all URLs to a temporary file
+        temp_urls_file = 'temp_urls.json'
+        with open(temp_urls_file, 'w') as f:
+            json.dump(urls, f)
+        try:
+            # Get the project root directory (where scrapy.cfg is located)
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            self.logger.info(f"Using project root directory: {project_root}")
+
+            # Update PYTHONPATH in the environment variables
+            env = os.environ.copy()
+            env['PYTHONPATH'] = project_root + os.pathsep + env.get('PYTHONPATH', '')
+
+            subprocess.run(
+                [
+                    "scrapy", "crawl", "ind_listing",
+                    "-a", f"urls_file={temp_urls_file}",
+                    "-o", self.results_file,
+                    "-t", "json"
+                ],
+                check=True,
+                cwd=project_root,  # Set the working directory to project root
+                env=env  # Pass the updated environment variables
+            )
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"Error while running ind_listing spider: {e}")
+
+    def closed(self, reason):
+        self.driver.quit()
+
+
+
+##### FILE: ./cargiant_scraper_2/spiders/ind_listing.py
+==================================================
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import json
+import time
+
+class CargiantSpider(scrapy.Spider):
+    name = 'ind_listing'
+
+    def __init__(self, *args, **kwargs):
+        super(CargiantSpider, self).__init__(*args, **kwargs)
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        self.driver = webdriver.Chrome(options=chrome_options)
+
+        # Read URLs from the passed file
+        urls_file = kwargs.get('urls_file')
+        if urls_file:
+            with open(urls_file, 'r') as f:
+                self.start_urls = json.load(f)
+        else:
+            self.start_urls = []
+
+    def parse(self, response):
+        self.driver.get(response.url)
+        time.sleep(1)  # Wait for the page to load
+
+        # Initialize dictionary for output
+        output = {}
+
+        # Extract the title which includes both brand and model
+        try:
+            title_element = self.driver.find_element(By.CSS_SELECTOR, 'h1.title__main.set-h3')
+            title = title_element.text.strip()
+            title_parts = title.split(None, 1)  # Split into brand and model
+            output["brand"] = title_parts[0]
+            output["model"] = title_parts[1] if len(title_parts) > 1 else None
+        except Exception:
+            output["brand"] = None
+            output["model"] = None
+
+        # Extract price from top part
+        try:
+            price_element = self.driver.find_element(By.CSS_SELECTOR, 'div.price-block__price')
+            price = price_element.text.strip()
+            output["Price"] = price.replace('£', '').replace(',', '').strip()
+        except Exception:
+            output["Price"] = None
+
+        # Collect all items from details section on page
+        details = {}
+        try:
+            items = self.driver.find_elements(By.CSS_SELECTOR, 'li.details-panel-item__list__item')
+            for item in items:
+                spans = item.find_elements(By.CSS_SELECTOR, 'span')
+                if len(spans) >= 2:
+                    key = spans[0].text.strip()
+                    value = spans[1].text.strip()
+                    details[key] = value
+        except Exception:
+            pass
+
+        # Extract the required metrics from the details dictionary
+        output["Year"] = details.get('Year')
+        output["Mileage"] = details.get('Mileage')
+        output["Fuel"] = details.get('Fuel Type')
+        output["Transmission"] = details.get('Transmission')
+        output["Body"] = details.get('Body Type')
+
+        # Click on the Performance tab
+        try:
+            performance_tab = self.driver.find_element(By.CSS_SELECTOR, 'div[data-tab="tab1"]')
+            performance_tab.click()
+            time.sleep(1)  # Wait for the Performance tab to load
+
+            # Extract CC and Engine Power BHP from the Performance tab
+            cc = None
+            bhp = None
+            try:
+                # Locate the container for the performance table rows
+                performance_section = self.driver.find_element(By.CSS_SELECTOR, 'div.row-wrap__row.row.row--match-height')
+                
+                # Find all table rows in the performance section
+                rows = performance_section.find_elements(By.CSS_SELECTOR, 'tr')
+                for row in rows:
+                    try:
+                        # Locate key-value pairs in the table row
+                        key = row.find_element(By.CSS_SELECTOR, 'td.key').text.strip()  # Find the "key" cell
+                        value = row.find_element(By.CSS_SELECTOR, 'td.value').text.strip()  # Find the "value" cell
+
+                        if key == 'CC':
+                            cc = value
+                        elif key == 'Engine Power - BHP':
+                            bhp = value
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+            # Convert CC to litres
+            if cc:
+                try:
+                    output["litres"] = str(float(cc) / 1000)  # Convert to litres if CC is present
+                except ValueError:
+                    output["litres"] = None
+            else:
+                output["litres"] = None
+
+            # Store BHP
+            output["hp"] = bhp if bhp else None
+
+
+        except Exception:
+            output["litres"] = None
+            output["hp"] = None
+
+        # Yield the output dictionary
+        yield output
+
+    def closed(self, reason):
+        self.driver.quit()
+
+
+##### FILE: ./cargiant_scraper_2/spiders/__init__.py
+==================================================
+# This package will contain the spiders of your Scrapy project
+#
+# Please refer to the documentation for information on how to create and manage
+# your spiders.
+
+
+
+##### FILE: ./cargiant_scraper_2/middlewares.py
+==================================================
+import logging
+from selenium.webdriver.remote.remote_connection import LOGGER as selenium_logger
+from scrapy.http import HtmlResponse
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy import signals
+
+# Suppress unnecessary Selenium logs
+selenium_logger.setLevel(logging.WARNING)
+
+class SeleniumMiddleware:
+    def __init__(self):
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Run in headless mode
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")  # Required for some environments
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        middleware = cls()
+        crawler.signals.connect(middleware.spider_closed, signal=signals.spider_closed)
+        return middleware
+
+    def process_request(self, request, spider):
+        logging.info(f"Processing URL: {request.url}")
+        self.driver.get(request.url)
+
+        try:
+            # Wait until the target element is present
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-vehicle]"))
+            )
+        except Exception as e:
+            logging.error(f"Error loading page {request.url}: {e}")
+            return HtmlResponse(
+                url=self.driver.current_url,
+                status=500,
+                request=request,
+                body=f"Error loading page: {e}".encode('utf-8')
+            )
+
+        body = self.driver.page_source
+        return HtmlResponse(
+            url=self.driver.current_url,
+            body=body,
+            encoding='utf-8',
+            request=request
+        )
+
+    def spider_closed(self, spider):
+        logging.info("Closing Selenium WebDriver.")
+        self.driver.quit()
+
+
+
+##### FILE: ./cargiant_scraper_2/settings.py
+==================================================
+# Scrapy settings for cargiant_scraper_2 project
+
+BOT_NAME = "cargiant_scraper_2"
+
+SPIDER_MODULES = ["cargiant_scraper_2.spiders"]
+NEWSPIDER_MODULE = "cargiant_scraper_2.spiders"
+
+# Obey robots.txt rules
+ROBOTSTXT_OBEY = False
+
+# Enable or disable downloader middlewares
+DOWNLOADER_MIDDLEWARES = {
+    # 'cargiant_scraper_2.middlewares.SeleniumMiddleware': 543,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+}
+
+# Enable and configure HTTP caching (disabled by default)
+HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# Set settings whose default value is deprecated to a future-proof value
+REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+FEED_EXPORT_ENCODING = "utf-8"
+
+LOG_LEVEL = 'INFO'  # Set this to 'ERROR' if you only want to see errors.
+
+
+
+##### FILE: ./cargiant_scraper_2/pipelines.py
+==================================================
+# Define your item pipelines here
+#
+# Don't forget to add your pipeline to the ITEM_PIPELINES setting
+# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
+
+# useful for handling different item types with a single interface
+from itemadapter import ItemAdapter
+
+
+class CargiantScraperPipeline:
+    def process_item(self, item, spider):
+        return item
+
+
+
+##### FILE: ./cargiant_scraper_2/items.py
+==================================================
+# Define here the models for your scraped items
+#
+# See documentation in:
+# https://docs.scrapy.org/en/latest/topics/items.html
+
+import scrapy
+
+
+class CargiantScraperItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    pass
+
+
+
+##### FILE: ./cargiant_scraper_2/__init__.py
+==================================================
+
+
+
+##### FILE: ./cargiant_scraper_2/runfile.py
+==================================================
+import os
+from scrapy import cmdline
+
+# Ensure we are in the correct directory before running the Scrapy command
+# target_dir = './Marij/cargiant_scraper_2'
+# current_dir = os.getcwd()
+
+# if current_dir != os.path.abspath(target_dir):
+#     os.chdir(target_dir)
+
+# Execute the Scrapy command
+cmdline.execute("scrapy crawl master -O cargiant_data.json".split())
+
+
+
+##### FILE: ./cargiant_data.json
+==================================================
+[
+
+]
+
+
+.
+├── cargiant_data.json
+├── cargiant_scraper_2
+│   ├── __init__.py
+│   ├── items.py
+│   ├── middlewares.py
+│   ├── pipelines.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-310.pyc
+│   │   ├── __init__.cpython-313.pyc
+│   │   ├── middlewares.cpython-310.pyc
+│   │   ├── middlewares.cpython-313.pyc
+│   │   ├── settings.cpython-310.pyc
+│   │   └── settings.cpython-313.pyc
+│   ├── runfile.py
+│   ├── settings.py
+│   └── spiders
+│       ├── catalogue.py
+│       ├── ind_listing.py
+│       ├── __init__.py
+│       ├── master.py
+│       └── __pycache__
+│           ├── cargiant_spider.cpython-310.pyc
+│           ├── cargiant_spider.cpython-313.pyc
+│           ├── cargiant_spider_new.cpython-310.pyc
+│           ├── cargiant_spider_new.cpython-313.pyc
+│           ├── catalogue.cpython-310.pyc
+│           ├── ind_listing.cpython-310.pyc
+│           ├── __init__.cpython-310.pyc
+│           ├── __init__.cpython-313.pyc
+│           └── master.cpython-310.pyc
+├── combined_code.txt
+├── scrapy.cfg
+├── temp_urls.json
+└── urls.json
+
+4 directories, 30 files
