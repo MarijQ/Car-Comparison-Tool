@@ -113,6 +113,9 @@ class CargiantSpider(scrapy.Spider):
             env = os.environ.copy()
             env['PYTHONPATH'] = project_root + os.pathsep + env.get('PYTHONPATH', '')
 
+            # Ensure proper directory context
+            os.chdir(project_root)
+
             # Use sys.executable to ensure the subprocess uses the same Python environment
             subprocess.run(
                 [
@@ -122,7 +125,6 @@ class CargiantSpider(scrapy.Spider):
                     "-t", "json"
                 ],
                 check=True,
-                cwd=project_root,  # Set the working directory to project root
                 env=env  # Pass the updated environment variables
             )
         except subprocess.CalledProcessError as e:

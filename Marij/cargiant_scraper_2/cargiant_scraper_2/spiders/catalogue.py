@@ -23,7 +23,7 @@ class CargiantSpider(scrapy.Spider):
     def parse(self, response):
         self.driver.get(response.url)
 
-        for page_num in range(1):  # change number of pages
+        for page_num in range(5):  # change number of pages
             self.logger.info(f"Processing page {page_num + 1}")
             
             # Wait for the listings to load
