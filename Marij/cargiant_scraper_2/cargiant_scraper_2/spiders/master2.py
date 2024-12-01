@@ -9,6 +9,7 @@ from selenium.common.exceptions import TimeoutException
 import time
 import logging
 
+
 class MasterSpider(scrapy.Spider):
     name = "master2"
     start_urls = ['https://www.cargiant.co.uk/search/all/all']
@@ -24,14 +25,14 @@ class MasterSpider(scrapy.Spider):
     def parse(self, response):
         self.driver.get(response.url)
 
-
-        for page_num in range(3):  # Change this number to the desired number of pages
+        for page_num in range(1):  # Change this number to the desired number of pages
             self.logger.info(f"Processing page {page_num + 1}")
 
             # Wait for the listings to load
             try:
                 WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-vehicle]'))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'div[data-vehicle]'))
                 )
             except Exception as e:
                 self.logger.error(f"Error loading listings: {e}")
@@ -50,7 +51,7 @@ class MasterSpider(scrapy.Spider):
             if not listings:
                 self.logger.warning("No listings found!")
 
-            for listing in listings[:2]:
+            for listing in listings[:1]:
                 car_url = listing.attrib.get('href')
                 if car_url:
                     # Construct the absolute URL
@@ -62,9 +63,11 @@ class MasterSpider(scrapy.Spider):
             # Handle pagination by clicking the "Next" button
             try:
                 next_button = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a.paging__item--next'))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'a.paging__item--next'))
                 )
-                self.driver.execute_script("arguments[0].click();", next_button)
+                self.driver.execute_script(
+                    "arguments[0].click();", next_button)
                 time.sleep(2)  # Allow time for the next page to load
             except Exception as e:
                 self.logger.error(f"Error clicking next button: {e}")
@@ -81,7 +84,8 @@ class MasterSpider(scrapy.Spider):
 
         # Extract the title which includes both brand and model
         try:
-            title_element = self.driver.find_element(By.CSS_SELECTOR, 'h1.title__main.set-h3')
+            title_element = self.driver.find_element(
+                By.CSS_SELECTOR, 'h1.title__main.set-h3')
             title = title_element.text.strip()
             title_parts = title.split(None, 1)  # Split into brand and model
             output["brand"] = title_parts[0]
@@ -93,7 +97,8 @@ class MasterSpider(scrapy.Spider):
 
         # Extract price from top part
         try:
-            price_element = self.driver.find_element(By.CSS_SELECTOR, 'div.price-block__price')
+            price_element = self.driver.find_element(
+                By.CSS_SELECTOR, 'div.price-block__price')
             price = price_element.text.strip()
             output["Price"] = price.replace('£', '').replace(',', '').strip()
         except Exception as e:
@@ -103,7 +108,8 @@ class MasterSpider(scrapy.Spider):
         # Collect all items from details section on page
         details = {}
         try:
-            items = self.driver.find_elements(By.CSS_SELECTOR, 'li.details-panel-item__list__item')
+            items = self.driver.find_elements(
+                By.CSS_SELECTOR, 'li.details-panel-item__list__item')
             for item in items:
                 spans = item.find_elements(By.CSS_SELECTOR, 'span')
                 if len(spans) >= 2:
@@ -124,31 +130,44 @@ class MasterSpider(scrapy.Spider):
         try:
             # Wait until the Performance tab is clickable and click it
             performance_tab = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.tab-wrap__head__inner__tabs__tab[data-tab="tab1"]'))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, 'div.tab-wrap__head__inner__tabs__tab[data-tab="tab1"]'))
             )
             performance_tab.click()
             time.sleep(0.2)  # Wait for the Performance tab to load
 
             # Extract CC and Engine Power BHP from the Performance tab
+            # Locate all rows in the table
+            rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
             cc = None
             bhp = None
-            rows = self.driver.find_elements(By.CSS_SELECTOR, 'div#tab1 table.specs-table tr')
+
+            # Iterate through rows and extract data
             for row in rows:
                 try:
-                    th = row.find_element(By.CSS_SELECTOR, 'th').text.strip()
-                    td = row.find_element(By.CSS_SELECTOR, 'td').text.strip()
-                    if th == 'CC':
-                        cc = td
-                    elif th == 'Engine Power - BHP':
-                        bhp = td
+                    # Check for presence of key/value elements
+                    key_element = row.find_elements(By.CSS_SELECTOR, 'td.key')
+                    value_element = row.find_elements(
+                        By.CSS_SELECTOR, 'td.value')
+
+                    if key_element and value_element:  # Ensure both elements exist
+                        key = key_element[0].text.strip()
+                        value = value_element[0].text.strip()
+
+                        # Check for desired keys
+                        if key == 'CC':
+                            cc = value
+                        elif key == 'Engine Power - BHP':
+                            bhp = value
                 except Exception as e:
-                    self.logger.error(f"Error extracting Performance data: {e}")
+                    self.logger.error(f"Error parsing row: {e}")
                     continue
 
-            # Convert CC to litres
+            # Convert CC to litres if available
             if cc:
                 try:
-                    output["litres"] = str(float(cc.replace(',', '')) / 1000)  # Convert to litres
+                    output["litres"] = str(
+                        float(cc.replace(',', '').strip()) / 1000) if cc else None
                 except ValueError:
                     output["litres"] = None
             else:
@@ -156,8 +175,9 @@ class MasterSpider(scrapy.Spider):
 
             # Store BHP
             output["hp"] = bhp if bhp else None
+
         except Exception as e:
-            self.logger.error(f"Error clicking Performance tab or extracting data: {e}")
+            self.logger.error(f"Error extracting Performance data: {e}")
             output["litres"] = None
             output["hp"] = None
 
