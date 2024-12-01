@@ -25,7 +25,7 @@ class MasterSpider(scrapy.Spider):
     def parse(self, response):
         self.driver.get(response.url)
 
-        for page_num in range(1):  # Change this number to the desired number of pages
+        for page_num in range(100):  # Change this number to the desired number of pages
             self.logger.info(f"Processing page {page_num + 1}")
 
             # Wait for the listings to load
@@ -51,7 +51,7 @@ class MasterSpider(scrapy.Spider):
             if not listings:
                 self.logger.warning("No listings found!")
 
-            for listing in listings[:1]:
+            for listing in listings[:]:
                 car_url = listing.attrib.get('href')
                 if car_url:
                     # Construct the absolute URL
