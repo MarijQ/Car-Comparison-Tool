@@ -1,46 +1,71 @@
 import scrapy
 from scrapy_splash import SplashRequest
 
-
-class CwspiderSpider(scrapy.Spider):
-    name = "cwspider"
+class CarwowSpider(scrapy.Spider):
+    name = "carwow"
     allowed_domains = ["carwow.co.uk"]
-    start_urls = ["https://quotes.carwow.co.uk/deals/f62828769e457ac19ebb1149421f5845"]
-    #start_urls = ["https://www.carwow.co.uk/used-cars"]
+    start_urls = ["https://www.carwow.co.uk/used-cars"]
 
-    # def start_requests(self):
-    #     # Use SplashRequest to dynamically load the page with JavaScript
-    #     for url in self.start_urls:
-    #         yield SplashRequest(url, self.parse, args={'wait': 1})
+    base_url = "https://www.carwow.co.uk/used-cars?age=0%2C9&budget=0%2C150000&mileage=0%2C100000&stock_type=used&pagination%5Bcurrent_page%5D={page}&pagination%5Bper_page%5D=12"
 
+    # Splash script for gradual scrolling
+    scroll_script = """
+    function main(splash, args)
+        splash:go(args.url)
+        splash:wait(2)
+        local scroll_to = splash:jsfunc("window.scrollTo")
+        local get_height = splash:jsfunc("document.body.scrollHeight")
+        local height = 0
+        local prev_height = -1
+        while height ~= prev_height do
+            prev_height = height
+            height = get_height()
+            for i = 1, 10 do
+                scroll_to(0, height * i / 10)
+                splash:wait(0.5)
+            end
+        end
+        return splash:html()
+    end
+    """
+
+    def start_requests(self):
+        total_pages = 100  # Or dynamically determine total pages
+        for page in range(1, total_pages + 1):
+            yield SplashRequest(
+                url=self.base_url.format(page=page),
+                callback=self.parse,
+                endpoint="execute",
+                args={"lua_source": self.scroll_script},
+            )
 
     def parse(self, response):
-
         cars = response.css('article.card-generic')
         for car in cars:
-            url = car.css('a::attr(href)').get()
-            yield{
-                'url': url,
-            }
-        print(cars)
-        
-        car_name = response.css('span.deal-title__model::text').get()
-        price = response.css('div.deal-pricing__carwow-price::text').get()
-        
-        yield{
-            'car_name': car_name,
-            'price': price,
-        }
+            link = car.css('div.card-generic__section div.card-generic__ctas a::attr(href)').get()
+            if link:
+                yield SplashRequest(
+                    url=response.urljoin(link),
+                    callback=self.parse_car_details,
+                    endpoint="execute",
+                    args={"lua_source": self.scroll_script},
+                )
 
+    def parse_car_details(self, response):
+        car_name = response.css('span.deal-title__model::text').get(default="N/A")
+        price = response.css('div.deal-pricing__carwow-price::text').get(default="N/A")
         details = response.css('div.summary-list__item')
 
-        for div in details:
-            title = div.css('dt::text').get()
-            detail = div.css('dd::text').get()        
+        car_details = {
+            "car_name": car_name,
+            "price": price,
+            "specifications": {}
+        }
 
-            yield{
-                'title': title,
-                'detail': detail,
-            }
+        for detail in details:
+            title = detail.css('dt::text').get()
+            value = detail.css('dd::text').get()
+            if title and value:
+                car_details["specifications"][title] = value
 
-        
+        yield car_details

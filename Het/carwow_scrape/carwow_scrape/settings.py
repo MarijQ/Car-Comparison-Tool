@@ -27,6 +27,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_splash.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
     "carwow_scrape.middlewares.CarwowScrapeDownloaderMiddleware": 543,
+    "scrapy_selenium.SeleniumMiddleware": 800,
 }
 
 
@@ -38,7 +39,9 @@ HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 #USER_AGENT = "carwow_scrape (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
+CONCURRENT_REQUESTS = 16
+DOWNLOAD_DELAY = 1
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32

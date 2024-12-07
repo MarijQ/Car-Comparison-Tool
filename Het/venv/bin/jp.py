@@ -1,4 +1,4 @@
-#!/Users/hetsuhagiya/Desktop/Development/Used-Cars-Scraper/car_scrap/venv/bin/python3.12
+#!/Users/hetsuhagiya/Desktop/Development/Used-Cars-Scraper/Het/venv/bin/python3.13
 
 import sys
 import json
