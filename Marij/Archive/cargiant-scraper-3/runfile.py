@@ -9,4 +9,4 @@ from scrapy import cmdline
 #     os.chdir(target_dir)
 
 # Execute the Scrapy command
-cmdline.execute("scrapy crawl master -O cargiant_data.json".split())
+cmdline.execute("scrapy crawl master2 -O cargiant_data.json".split())

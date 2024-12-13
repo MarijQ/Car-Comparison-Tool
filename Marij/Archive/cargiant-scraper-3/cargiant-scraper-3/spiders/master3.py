@@ -12,7 +12,7 @@ from scrapy.exceptions import CloseSpider
 
 class MasterSpider(scrapy.Spider):
     name = "master3"
-    start_urls = ['https://www.cargiant.co.uk/search/all/all']
+    start_urls = ["https://www.cargiant.co.uk/search/all/all"]
     custom_settings = {
         "CONCURRENT_REQUESTS": 16,
         "RETRY_ENABLED": True,
@@ -25,9 +25,9 @@ class MasterSpider(scrapy.Spider):
 
         # Selenium WebDriver setup
         chrome_options = Options()
-        chrome_options.add_argument('--headless')  # Run browser in headless mode
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument("--headless")  # Run browser in headless mode
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(options=chrome_options)
 
     def parse(self, response):
@@ -41,7 +41,9 @@ class MasterSpider(scrapy.Spider):
             # Wait for the listings to load
             try:
                 WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-vehicle]'))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, "div[data-vehicle]")
+                    )
                 )
                 self.logger.info(f"Page loaded: {self.driver.current_url}")
             except TimeoutException:
@@ -53,9 +55,11 @@ class MasterSpider(scrapy.Spider):
             current_response = HtmlResponse(
                 url=self.driver.current_url,
                 body=body,
-                encoding='utf-8',
+                encoding="utf-8",
             )
-            listings = current_response.css('a.car-listing-item__details::attr(href)').extract()
+            listings = current_response.css(
+                "a.car-listing-item__details::attr(href)"
+            ).extract()
             absolute_urls = [f"https://www.cargiant.co.uk{url}" for url in listings]
             self.collected_urls.extend(absolute_urls)
             self.logger.info(f"Collected {len(absolute_urls)} URLs from this page.")
@@ -63,7 +67,9 @@ class MasterSpider(scrapy.Spider):
             # Try to navigate to the next page
             try:
                 next_button = WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.paging__item--next'))
+                    EC.element_to_be_clickable(
+                        (By.CSS_SELECTOR, "a.paging__item--next")
+                    )
                 )
                 self.driver.execute_script("arguments[0].click();", next_button)
             except TimeoutException:
@@ -75,7 +81,9 @@ class MasterSpider(scrapy.Spider):
             self.logger.error("No URLs found during phase 1.")
             raise CloseSpider("No listings to scrape.")
 
-        self.logger.info(f"Collected a total of {len(self.collected_urls)} listing URLs.")
+        self.logger.info(
+            f"Collected a total of {len(self.collected_urls)} listing URLs."
+        )
         for url in self.collected_urls:
             yield scrapy.Request(url=url, callback=self.parse_listing)
 
@@ -92,7 +100,7 @@ class MasterSpider(scrapy.Spider):
         output["url"] = response.url
 
         # Extract the title (brand and model)
-        title = response.css('h1.title__main.set-h3::text').get()
+        title = response.css("h1.title__main.set-h3::text").get()
         if title:
             title_parts = title.strip().split(None, 1)
             output["brand"] = title_parts[0]
@@ -102,31 +110,37 @@ class MasterSpider(scrapy.Spider):
             output["model"] = None
 
         # Extract price
-        price = response.css('div.price-block__price::text').get()
-        output["Price"] = price.replace('£', '').replace(',', '').strip() if price else None
+        price = response.css("div.price-block__price::text").get()
+        output["Price"] = (
+            price.replace("£", "").replace(",", "").strip() if price else None
+        )
 
         # Extract details section
         details = {}
-        for item in response.css('li.details-panel-item__list__item'):
-            key = item.css('span:nth-child(1)::text').get()
-            value = item.css('span:nth-child(2)::text').get()
+        for item in response.css("li.details-panel-item__list__item"):
+            key = item.css("span:nth-child(1)::text").get()
+            value = item.css("span:nth-child(2)::text").get()
             if key and value:
                 details[key.strip()] = value.strip()
 
-        output["Year"] = details.get('Year')
-        output["Mileage"] = details.get('Mileage')
-        output["Fuel"] = details.get('Fuel Type')
-        output["Transmission"] = details.get('Transmission')
-        output["Body"] = details.get('Body Type')
+        output["Year"] = details.get("Year")
+        output["Mileage"] = details.get("Mileage")
+        output["Fuel"] = details.get("Fuel Type")
+        output["Transmission"] = details.get("Transmission")
+        output["Body"] = details.get("Body Type")
 
         # Extract Performance tab data
         cc = response.xpath("//th[text()='CC']/following-sibling::td/text()").get()
-        bhp = response.xpath("//th[text()='Engine Power - BHP']/following-sibling::td/text()").get()
+        bhp = response.xpath(
+            "//th[text()='Engine Power - BHP']/following-sibling::td/text()"
+        ).get()
 
         # Convert CC to litres if available
         if cc:
             try:
-                output["litres"] = str(float(cc.replace(',', '').strip()) / 1000) if cc else None
+                output["litres"] = (
+                    str(float(cc.replace(",", "").strip()) / 1000) if cc else None
+                )
             except ValueError:
                 output["litres"] = None
         else:

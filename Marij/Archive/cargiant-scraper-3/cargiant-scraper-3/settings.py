@@ -2,15 +2,15 @@
 
 BOT_NAME = "cargiant_scraper_3"
 
-SPIDER_MODULES = ["cargiant_scraper_3.spiders"]
-NEWSPIDER_MODULE = "cargiant_scraper_3.spiders"
+SPIDER_MODULES = ["cargiant-scraper-3.spiders"]
+NEWSPIDER_MODULE = "cargiant-scraper-3.spiders"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 DOWNLOADER_MIDDLEWARES = {
-    # 'cargiant_scraper_3.middlewares.SeleniumMiddleware': 543,
+    'cargiant-scraper-3.middlewares.SeleniumMiddleware': 543,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
 }
 
