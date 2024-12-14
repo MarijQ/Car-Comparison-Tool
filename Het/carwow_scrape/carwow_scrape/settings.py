@@ -1,11 +1,4 @@
 # Scrapy settings for carwow_scrape project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://docs.scrapy.org/en/latest/topics/settings.html
-#     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = "carwow_scrape"
 
@@ -23,17 +16,27 @@ SPIDER_MIDDLEWARES = {
 }
 
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy_splash.SplashCookiesMiddleware': 723,
-    'scrapy_splash.SplashMiddleware': 725,
-    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-    "carwow_scrape.middlewares.CarwowScrapeDownloaderMiddleware": 543,
-    "scrapy_selenium.SeleniumMiddleware": 800,
+    'scrapy_splash.SplashCookiesMiddleware': 723,  # Middleware for Splash to handle cookies
+    'scrapy_splash.SplashMiddleware': 725,        # Middleware for Splash rendering
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,  # For gzip/deflate compression
+    'scrapy_selenium.SeleniumMiddleware': 800,    # Middleware for Selenium integration
+    'carwow_scrape.middlewares.CarwowScrapeDownloaderMiddleware': 543,  # Custom middleware (if applicable)
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None, # Disabling default User-Agent middleware
 }
 
-
+# Configure Splash-aware duplicate filtering
 DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 
+# Enable Splash-aware cache storage
 HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
+
+# Configure Selenium settings
+SELENIUM_DRIVER_NAME = 'chrome'  # Tells Scrapy to use ChromeDriver
+SELENIUM_DRIVER_EXECUTABLE_PATH = '/opt/homebrew/bin/chromedriver'  # Path to ChromeDriver, not Chromium
+SELENIUM_DRIVER_ARGUMENTS = ['--headless', '--no-sandbox', '--disable-dev-shm-usage']  # Headless mode & other options
+
+# Path to the Chromium browser
+SELENIUM_DRIVER_PATH = '/opt/homebrew/bin/chromium'  # Path to the Chromium executable
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "carwow_scrape (+http://www.yourdomain.com)"
@@ -43,37 +46,21 @@ ROBOTSTXT_OBEY = True
 CONCURRENT_REQUESTS = 16
 DOWNLOAD_DELAY = 1
 
-# Configure maximum concurrent requests performed by Scrapy (default: 16)
+# Set maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
-# Configure a delay for requests for the same website (default: 0)
-# See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
-# See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
-# The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
-
-# Disable cookies (enabled by default)
+# Enable or disable cookies (enabled by default)
 #COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
-# Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-#    "Accept-Language": "en",
-#}
-
 # Enable or disable spider middlewares
-# See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
 #    "carwow_scrape.middlewares.CarwowScrapeSpiderMiddleware": 543,
 # }
 
 # Enable or disable downloader middlewares
-# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 # DOWNLOADER_MIDDLEWARES = {
 #    "carwow_scrape.middlewares.CarwowScrapeDownloaderMiddleware": 543,
 # }
@@ -84,14 +71,38 @@ DOWNLOAD_DELAY = 1
 #    "scrapy.extensions.telnet.TelnetConsole": None,
 #}
 
+EXTENSIONS = {
+    'scrapy.extensions.closespider.CloseSpider': 1,
+}
+
 # Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "carwow_scrape.pipelines.CarwowScrapePipeline": 300,
 }
 
+# Output settings
+FEED_FORMAT = 'json'  # Output in JSON format
+FEED_URI = './output.json'  # File to save the data
+FEED_EXPORT_ENCODING = 'utf-8'
+
+# Enable auto-throttle for managing concurrent requests efficiently
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 1
+AUTOTHROTTLE_MAX_DELAY = 60
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+AUTOTHROTTLE_DEBUG = False
+
+# Enable HTTP caching to prevent unnecessary downloads
+HTTPCACHE_ENABLED = True
+HTTPCACHE_EXPIRATION_SECS = 86400  # Cache data for 24 hours
+HTTPCACHE_DIR = "httpcache"
+HTTPCACHE_IGNORE_HTTP_CODES = []
+
+# Save data incrementally with batching
+FEED_EXPORT_BATCH_ITEM_COUNT = 100  # Save data every 100 items
+FEED_STORE_EMPTY = True
+
 # Enable and configure the AutoThrottle extension (disabled by default)
-# See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY = 5
