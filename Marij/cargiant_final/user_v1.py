@@ -5,7 +5,7 @@ def run_query():
     try:
         # Connect to the PostgreSQL database
         connection = psycopg2.connect(
-            dbname="used_cars",
+            dbname="car_listings",
             user="marij",
             password="marij", 
             host="localhost"
