@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import psycopg2
+from decimal import Decimal
 
 # Database connection parameters
 DB_NAME = "car_listings"
@@ -23,12 +24,6 @@ class CarFilterApp:
         self.result_frame.grid(row=0, column=1, sticky="n")
 
         # Fields to filter on
-        # For simplicity, include a small subset. Add or remove fields as needed.
-        # We will assume the following fields:
-        # text fields: make, model, fuel_type, body_style, transmission
-        # numeric fields: price, mileage, year, n_doors, previous_owners
-        # We'll also allow filtering on engine_size (numeric, treated as cc or liters)
-        # If unsure about a field, you can treat as text or numeric accordingly.
         self.fields = {
             "make": "text",
             "model": "text",
@@ -61,12 +56,14 @@ class CarFilterApp:
         self.table_label = tk.Label(self.result_frame, text="Top 5 Matches", font=("Arial", 14, "bold"))
         self.table_label.grid(row=0, column=0, sticky="w")
 
-        self.tree = ttk.Treeview(self.result_frame, columns=("make", "model", "price", "mileage", "year"), show='headings')
-        self.tree.heading("make", text="Make")
-        self.tree.heading("model", text="Model")
-        self.tree.heading("price", text="Price")
-        self.tree.heading("mileage", text="Mileage")
-        self.tree.heading("year", text="Year")
+        # Define Treeview columns dynamically
+        self.tree_columns = list(self.fields.keys())
+        self.tree = ttk.Treeview(self.result_frame, columns=self.tree_columns, show='headings')
+
+        for column in self.tree_columns:
+            self.tree.heading(column, text=column.capitalize())
+            self.tree.column(column, width=100)
+
         self.tree.grid(row=1, column=0, sticky="nsew")
 
         # Average price label (bottom right)
@@ -78,56 +75,65 @@ class CarFilterApp:
         self.result_frame.grid_columnconfigure(0, weight=1)
 
     def run_search(self):
+        # Collect user inputs
+        user_inputs = {f: self.entries[f].get().strip() for f in self.fields}
+        
+        # Prepare filters
         filters = []
         values = []
-        
-        # Construct dynamic query
-        # We will apply filters only if user provides input.
-        # For text fields: exact match (e.g., make = 'Toyota')
-        # For numeric fields: value between val*0.8 and val*1.2
-        for field_name, field_type in self.fields.items():
-            val = self.entries[field_name].get().strip()
-            if val:  # If user provided a value
-                if field_type == "text":
-                    # exact match case-insensitive
-                    filters.append(f"LOWER({field_name}) = LOWER(%s)")
-                    values.append(val)
-                else:
-                    # numeric
-                    try:
-                        num_val = float(val)
-                        low = num_val * 0.8
-                        high = num_val * 1.2
-                        filters.append(f"{field_name} BETWEEN %s AND %s")
-                        values.append(low)
-                        values.append(high)
-                    except ValueError:
-                        # If not numeric, skip or treat as no filter.
-                        pass
-
-        where_clause = ""
-        if filters:
-            where_clause = "WHERE " + " AND ".join(filters)
-
-        # We retrieve top 5 matched cars ordered by price ascending
-        query = f"""
-            SELECT make, model, price, mileage, year
-            FROM car_db
-            {where_clause}
-            ORDER BY price ASC
-            LIMIT 5;
-        """
-
-        # Also retrieve average price over all matched cars
-        avg_query = f"""
-            SELECT AVG(price), COUNT(*)
-            FROM car_db
-            {where_clause};
-        """
 
         try:
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
+
+            for field_name, field_type in self.fields.items():
+                val = user_inputs[field_name]
+                if val:
+                    if field_type == "text":
+                        # exact match, case-insensitive
+                        filters.append(f"LOWER({field_name}) = LOWER(%s)")
+                        values.append(val)
+                    else:
+                        # numeric: use standard deviation from the database for that field
+                        try:
+                            num_val = float(val)
+                            # Get standard deviation for this field from the entire dataset
+                            std_query = f"SELECT stddev_samp({field_name}) FROM car_db;"
+                            cur.execute(std_query)
+                            std_dev = cur.fetchone()[0]
+
+                            if std_dev is not None:
+                                std_dev = float(std_dev)  # Convert Decimal to float
+                            else:
+                                std_dev = 0  # Fallback if no stddev available
+
+                            low = num_val - std_dev
+                            high = num_val + std_dev
+                            filters.append(f"{field_name} BETWEEN %s AND %s")
+                            values.extend([low, high])
+
+                        except ValueError:
+                            pass  # Invalid numeric input, skip
+
+            where_clause = ""
+            if filters:
+                where_clause = "WHERE " + " AND ".join(filters)
+
+            # Query for top 5 matches
+            query = f"""
+                SELECT {', '.join(self.fields.keys())}
+                FROM car_db
+                {where_clause}
+                ORDER BY price ASC
+                LIMIT 5;
+            """
+
+            # Query for average price
+            avg_query = f"""
+                SELECT AVG(price), COUNT(*)
+                FROM car_db
+                {where_clause};
+            """
 
             cur.execute(query, tuple(values))
             rows = cur.fetchall()
