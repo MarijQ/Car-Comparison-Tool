@@ -11,8 +11,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import logging
 
-PAGES = 10
-LISTINGS_PER_PAGE = 10
+PAGES = 2
+LISTINGS_PER_PAGE = 2
 
 
 class MasterSpider(scrapy.Spider):

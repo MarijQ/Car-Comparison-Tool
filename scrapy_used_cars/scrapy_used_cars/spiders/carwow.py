@@ -33,21 +33,43 @@ class CarwowSpider(Spider):
         """
         Converts the car data dictionary to the format required by the database pipeline.
         """
+        # List of multi-word car makes
+        multi_word_makes = [
+            "Aston Martin", "Alfa Romeo", "GWM Ora", "KGM Motors", "Land Rover"
+        ]
+
+        # Split car name into words
+        car_name = car_data.get("car_name")
+        car_name_parts = car_name.split()
+
+        # Initialize make and model
+        make = ""
+        model = ""
+
+        # Check if the first two words form a multi-word make
+        if len(car_name_parts) >= 2 and f"{car_name_parts[0]} {car_name_parts[1]}" in multi_word_makes:
+            make = f"{car_name_parts[0]} {car_name_parts[1]}"
+            model = " ".join(car_name_parts[2:])  # Remaining parts as model
+        else:
+            make = car_name_parts[0]  # First word as make
+            model = " ".join(car_name_parts[1:])  # Remaining parts as model
+            
         return {
-            "make": car_data.get("car_name").split(" ")[0] if car_data.get("car_name") else None,
-            "model": " ".join(car_data.get("car_name").split(" ")[1:]) if car_data.get("car_name") else None,
+            "make": make if make else None,
+            "model": model if model else None,
             "price": float(car_data.get("price").replace("£", "").replace(",", "")) if car_data.get("price") else None,
             "mileage": float(car_data.get("mileage").replace(" miles", "").replace(",", "")) if car_data.get("mileage") else None,
             "fuel_type": car_data.get("fuel"),
             "body_style": car_data.get("body_style"),
             "engine_size": car_data.get("engine_size").replace(" litres", "") if car_data.get("engine_size") else None,
+            "hp": car_data.get("hp"),
             "transmission": car_data.get("transmission"),
             "year": int(car_data.get("year")) if car_data.get("year") else None,
             "dealership_name": car_data.get("dealer_name"),
-            "mpg": car_data.get("average_mpg"),
-            "n_doors": car_data.get("doors"),
+            "mpg": car_data.get("mpg"),
+            "n_doors": car_data.get("n_doors"),
             "previous_owners": car_data.get("previous_owners"),
-            "droplet": None,  # Not available from Carwow
+            "droplet": car_data.get("droplet"),
             "feature_list": None  # Could be populated if feature extraction is added
         }
 
@@ -61,7 +83,7 @@ class CarwowSpider(Spider):
 
         while True:
             cars = self.driver.find_elements(By.CSS_SELECTOR, "article.card-generic")
-            for car_index in range(len(cars)):
+            for car_index in range(2): #len(cars)
                 try:
                     # Re-fetch car elements to avoid stale references
                     cars = self.driver.find_elements(By.CSS_SELECTOR, "article.card-generic")
@@ -119,6 +141,16 @@ class CarwowSpider(Spider):
                                 car_data["transmission"] = detail
                             elif title.lower() == "fuel":
                                 car_data["fuel"] = detail
+                            elif title.lower() == "colour":
+                                car_data["droplet"] = detail
+                            elif title.lower() == "engine power":
+                                car_data["hp"] = detail
+                            elif title.lower() == "previous owners":
+                                car_data["previous_owners"] = detail
+                            elif title.lower() == "average mpg":
+                                car_data["mpg"] = detail
+                            elif title.lower() == "doors":
+                                car_data["n_doors"] = detail
                         except Exception as e:
                             self.logger.warning(f"Error fetching detail: {e}")
 
@@ -150,7 +182,7 @@ class CarwowSpider(Spider):
         """
         Main entry point to start scraping all pages.
         """
-        page_links = [self.base_url.format(page=page) for page in range(1, 101)]  # Fetch links dynamically if needed
+        page_links = [self.base_url.format(page=page) for page in range(1, 2)]  # Fetch links dynamically if needed
         for link in page_links:
             try:
                 self.driver.get(link)

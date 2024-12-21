@@ -25,6 +25,7 @@ class CargiantFinalPipeline:
                 fuel_type VARCHAR(50),
                 body_style VARCHAR(100),
                 engine_size VARCHAR(50),
+                hp VARCHAR(50),
                 transmission VARCHAR(50),
                 year INT,
                 dealership_name VARCHAR(255),
