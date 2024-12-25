@@ -35,9 +35,9 @@ The following technologies were used throughout the project:
 ### Websites Scraped
 We focused on gathering data from the following car listing websites:
 
-1. **Caewow**
+1. **Carwow**
 2. **Lookers**
-3. **Cargaint**
+3. **Cargiant**
 
 Each website offers a unique set of data related to car listings, including details like model, price, location, and availability. The goal was to compare the listings across these platforms and analyze trends.
 
