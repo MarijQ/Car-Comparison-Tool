@@ -9,11 +9,55 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 
 # 1. Intoduction
-Why and what are we doing in this project? narrative of the project. Intorduce the team work and what was the tasks for all the team member. Website permissions at the end (if you are clueless look above).
+
+In this project, our goal was to gather and analyze car listings from three popular websites: Caewow, Lookers, and Cargaint. By scraping these websites, we aimed to create a database of car listings, including important details such as model, price, and location, to explore trends in the car market. The project involved using a variety of technologies to extract, process, and visualize the data, ultimately providing insights that could be useful for anyone interested in the car market.
 
 # 2. Project Overview
-scrapers used, teck stack used, websites scraped, flowchart
 
+In this section, we provide an overview of the technologies, tools, and websites used in the project. We also outline the flow of the project, from scraping the websites to visualizing the data.
+
+### Scrapers Used
+We used **Selenium** and **Splash** for web scraping:
+
+- **Selenium**: A powerful tool for automating web browsers, which helped us interact with dynamic content on the websites.
+- **Splash**: A headless browser designed for web scraping, which allowed us to render pages with JavaScript content before scraping.
+
+### Tech Stack
+The following technologies were used throughout the project:
+
+- **Selenium**: Web scraping automation.
+- **Splash**: Headless browser rendering for dynamic content.
+- **Docker**: Containerization to ensure the project can run in any environment consistently.
+- **Dash**: Framework for building interactive data visualizations and dashboards.
+- **PostgreSQL**: A relational database to store and process the scraped data.
+- **Python**: The main programming language used to write the scraping scripts, data processing, and dashboard logic.
+
+### Websites Scraped
+We focused on gathering data from the following car listing websites:
+
+1. **Caewow**
+2. **Lookers**
+3. **Cargaint**
+
+Each website offers a unique set of data related to car listings, including details like model, price, location, and availability. The goal was to compare the listings across these platforms and analyze trends.
+
+### Project Flowchart
+The project follows this flow:
+
+1. **Scraping**: 
+   - The scraper extracts data from the selected websites using Selenium and Splash.
+   - Each website is crawled to gather car details like model, price, and location.
+
+2. **Data Storage**:
+   - The scraped data is processed and stored in a **PostgreSQL** database.
+   - Data is organized into tables to facilitate querying and analysis.
+
+3. **Data Visualization**:
+   - The processed data is presented in interactive dashboards using **Dash**.
+   - Visualizations highlight trends, price ranges, and geographical distributions of car listings.
+
+4. **Deployment**:
+   - The entire project is containerized using **Docker**, ensuring the environment is reproducible and deployable on any machine.
 # 3. UI
 gif (one gif will show user gives input and another gif will show skipping some features) that demonstartes how the whole thing works. (full demonstration)
 
