@@ -1,20 +1,26 @@
-from scrapy import Spider  # Import the base Spider class
+import scrapy  # Import the base Spider class
 from scrapy.http import Request  # Import Scrapy's Request class
 from selenium import webdriver  # Import Selenium for browser automation
 from selenium.webdriver.common.by import By  # Import By for finding elements
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
+import re
+import signal
+import sys
 
 
-class CarwowSpider(Spider):
+class CarwowSpider(scrapy.Spider):
     name = "carwow"
     start_urls = [
         "https://www.carwow.co.uk/used-cars"
     ]
-    base_url = "https://www.carwow.co.uk/used-cars?age=0%2C9&budget=0%2C150000&mileage=0%2C100000&stock_type=used&pagination%5Bcurrent_page%5D={page}&pagination%5Bper_page%5D=12"
 
+    base_url = "https://www.carwow.co.uk/used-cars?age=0%2C9&body_types_slug={body_type}&budget=0%2C150000&mileage=0%2C100000&safety_rating=0&stock_type=used&pagination%5Bcurrent_page%5D={page}&pagination%5Bper_page%5D=12&sort_order%5Bkey%5D=offer&sort_order%5Bdirection%5D=asc&filter_options%5Bdefault_make_slugs%5D=&filter_options%5Bdefault_model_slugs%5D=&filter_options%5Ballowed_stock_types%5D=used&filter_options%5Bhidden_filters%5D=stock_type%2Csupplier_distance&filter_options%5Bexcluded_filters%5D="
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Initialize Selenium WebDriver
@@ -26,10 +32,16 @@ class CarwowSpider(Spider):
 
         # Variables to maintain scraping state
         self.scraped_links = []
-        self.scroll_pause_time = 4
+        self.scroll_pause_time = 0.5
         self.scroll_step = 500
+        
+        # def signal_handler(sig, frame):
+        #     self.driver.quit()
+        #     sys.exit(0)
 
-    def parse_listing(self, car_data):
+        # signal.signal(signal.SIGINT, signal_handler)
+
+    def parse_listing(self, car_data, body_type):
         """
         Converts the car data dictionary to the format required by the database pipeline.
         """
@@ -60,7 +72,7 @@ class CarwowSpider(Spider):
             "price": float(car_data.get("price").replace("£", "").replace(",", "")) if car_data.get("price") else None,
             "mileage": float(car_data.get("mileage").replace(" miles", "").replace(",", "")) if car_data.get("mileage") else None,
             "fuel_type": car_data.get("fuel"),
-            "body_style": car_data.get("body_style"),
+            "body_style": body_type.capitalize(),
             "engine_size": car_data.get("engine_size").replace(" litres", "") if car_data.get("engine_size") else None,
             "hp": car_data.get("hp"),
             "transmission": car_data.get("transmission"),
@@ -72,18 +84,20 @@ class CarwowSpider(Spider):
             "droplet": car_data.get("droplet"),
             "feature_list": None  # Could be populated if feature extraction is added
         }
-
-    def scrape_page_content(self):
+    def scrape_page_content(self, body_type):
         """
         Scrapes content from a single page of cars and yields data to the pipeline.
         """
+        def extract_numeric(value):
+            return re.sub(r'[^\d\.]', '', str(value).strip()) if re.search(r'\d', str(value)) else None
+        
         total_height = self.driver.execute_script("return document.body.scrollHeight")
         current_scroll_position = 0
         last_scroll_position = 0
 
         while True:
             cars = self.driver.find_elements(By.CSS_SELECTOR, "article.card-generic")
-            for car_index in range(2): #len(cars)
+            for car_index in range(len(cars)):
                 try:
                     # Re-fetch car elements to avoid stale references
                     cars = self.driver.find_elements(By.CSS_SELECTOR, "article.card-generic")
@@ -144,18 +158,18 @@ class CarwowSpider(Spider):
                             elif title.lower() == "colour":
                                 car_data["droplet"] = detail
                             elif title.lower() == "engine power":
-                                car_data["hp"] = detail
+                                car_data["hp"] = int(extract_numeric(detail))
                             elif title.lower() == "previous owners":
                                 car_data["previous_owners"] = detail
                             elif title.lower() == "average mpg":
-                                car_data["mpg"] = detail
+                                car_data["mpg"] = float(extract_numeric(detail))
                             elif title.lower() == "doors":
                                 car_data["n_doors"] = detail
                         except Exception as e:
                             self.logger.warning(f"Error fetching detail: {e}")
 
                     # Convert to pipeline-compatible data and yield
-                    yield self.parse_listing(car_data)
+                    yield self.parse_listing(car_data, body_type)
 
                     # Track scraped links
                     self.scraped_links.append(link)
@@ -177,22 +191,33 @@ class CarwowSpider(Spider):
                 self.logger.info("No more new cars to scrape on this page.")
                 break
             last_scroll_position = new_height
-
+            
+            
     def parse(self, response):
         """
         Main entry point to start scraping all pages.
         """
-        page_links = [self.base_url.format(page=page) for page in range(1, 2)]  # Fetch links dynamically if needed
-        for link in page_links:
-            try:
-                self.driver.get(link)
-                time.sleep(3)  # Allow the page to load
-                yield from self.scrape_page_content()
-            except Exception as e:
-                self.logger.warning(f"Error processing page {link}: {e}")
+        body_type_list = ['cabriolet', 'convertible', 'coupe', 'estate', 'hardtop', 'hatchback', 'roadster','saloon','soft-top','station-wagon']
+        
+        total_pages = 0
+        for body_type in body_type_list:
+            page = 1
+            while total_pages < 100:
+                link = self.base_url.format(body_type=body_type, page=page)
+                try:
+                    self.driver.get(link)
+                    time.sleep(1)  
+                    yield from self.scrape_page_content(body_type)
+                    total_pages += 1
+                    page += 1
+                except Exception as e:
+                    self.logger.warning(f"Error processing page {link}: {e}")
+                    break
+
 
     def closed(self, reason):
         """
         Cleanup method to quit Selenium WebDriver.
         """
         self.driver.quit()
+

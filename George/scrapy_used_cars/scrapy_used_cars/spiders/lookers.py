@@ -2,20 +2,52 @@ import scrapy
 from scrapy_splash import SplashRequest
 import json
 import random
-from scrapy.utils.project import get_project_settings
+import scrapy_splash
+import re
 
 
-class LookerSpider(scrapy.Spider):
+class LookersSpider(scrapy.Spider):
     name = 'lookers'
 
-    def __init__(self, *args, **kwargs):
-        super(LookerSpider, self).__init__(*args, **kwargs)
-        
-        # Get the current project settings
-        settings = get_project_settings()
-        
-        # Set the settings for this spider from the custom settings module
-        settings.setmodule('myproject.settings.cargiant_settings', priority='project')
+    custom_settings = {
+        'SPLASH_URLS': ['http://localhost:8050', 'http://localhost:8052'],
+        'SPLASH_LOG_400': True,
+        'DOWNLOADER_MIDDLEWARES': {
+           'scrapy_splash.SplashCookiesMiddleware': 723,
+           'scrapy_splash.SplashMiddleware': 725,
+        },
+        'SPIDER_MIDDLEWARES': {
+           'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
+            "scrapy_used_cars.middlewares.UsedCarsSpiderMiddleware": 543,
+        },
+        'DUPEFILTER_CLASS':'scrapy_splash.SplashAwareDupeFilter',
+        'HTTPCACHE_STORAGE':'scrapy_splash.SplashAwareFSCacheStorage',
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 20,
+        'CONCURRENT_REQUESTS_PER_IP': None,
+        'COOKIES_ENABLED': True,
+        'SPLASH_SLOT_POLICY': scrapy_splash.SlotPolicy.PER_DOMAIN,
+        'SPLASH_COOKIES_DEBUG': True,
+        'DEFAULT_REQUEST_HEADERS': {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0"
+        },
+        'DOWNLOADER_MIDDLEWARES': {
+            "scrapy_used_cars.middlewares.UsedCarsDownloaderMiddleware": 543,
+        },
+        'ITEM_PIPELINES': {
+            "scrapy_used_cars.pipelines.UsedCarsPipeline": 300,
+        },
+        'REACTOR_THREADPOOL_MAXSIZE': 40,
+        'AUTOTHROTTLE_ENABLED': True,
+        'AUTOTHROTTLE_START_DELAY': 0.1,
+        'AUTOTHROTTLE_MAX_DELAY': 5,
+        'AUTOTHROTTLE_TARGET_CONCURRENCY': 20,
+        'AUTOTHROTTLE_DEBUG': True,
+        'RETRY_ENABLED': True,
+        'RETRY_HTTP_CODES': [400, 429, 500, 503],
+        'RETRY_TIMES': 3,
+    }
         
     # Define your Lua script for Splash
     lua_script = """
@@ -55,7 +87,12 @@ class LookerSpider(scrapy.Spider):
     ]
     
     def get_splash_url(self):
-        return random.choice(self.settings.get('SPLASH_URLS'))
+        # Safely get a random splash URL from the settings
+        splash_urls = self.settings.get('SPLASH_URLS', [])
+        if splash_urls:
+            return random.choice(splash_urls)
+        else:
+            raise ValueError("SPLASH_URLS is not set correctly in settings.")
 
     def parse(self, response):
         # Parse the JSON response
@@ -104,20 +141,45 @@ class LookerSpider(scrapy.Spider):
 
 
     def parse_car(self, response):
+        
+        def extract_numeric(value):
+            return re.sub(r'[^\d\.]', '', str(value).strip()) if re.search(r'\d', str(value)) else None
+        
         # Extract car details passed via meta
         car_meta = response.meta
 
         # Extract additional car details from the detailed page
         car_info = response.xpath("//div[contains(@class, 'used-specs__data-col')]").css('span.used-specs__vehicle-data::text').getall()
 
-        # Handle missing data for MPG, number of doors, previous owners, etc.
-        mpg, previous_owners, n_doors, droplet = None, None, None, None
-        if len(car_info) >= 8:
-            mpg = car_info[3] if len(car_info) > 3 else None
-            previous_owners = car_info[5] if len(car_info) > 5 else None
-            n_doors = car_info[7] if len(car_info) > 7 else None
-            droplet = car_info[9] if len(car_info) > 9 else None
-
+        # Necessary to handle errors from missing data in the website
+        if len(car_info) == 10:
+           mpg = car_info[3] 
+           previous_owners = car_info[5] 
+           n_doors = car_info[7] 
+           droplet = car_info[9]
+        elif len(car_info) == 9:
+            mpg = None 
+            previous_owners = car_info[4] 
+            n_doors = car_info[6] 
+            droplet = car_info[8]
+        elif len(car_info) == 8:
+            mpg = None
+            previous_owners = car_info[3]
+            n_doors = car_info[5]
+            droplet = car_info[7]
+            
+        technical_info = response.xpath("//div[contains(@class, 'feature-panel_table tabular-text tabular-text--2col')]")
+        rows = technical_info.xpath(".//div[@class='tabular-text__row' and not(contains(@class, 'tabular-text__row--header'))]")
+        hp = None
+        for row in rows:
+            elems = row.xpath(".//div[@class='tabular-text__elem tabular-text__elem--container']")
+            if len(elems) == 2:
+                name = elems[0].xpath(".//div[@class='tabular-text__elem']/text()").get()
+                value = elems[1].xpath(".//div[@class='tabular-text__elem']/text()").get()
+                if name.strip() == "Engine Power - BHP":
+                    hp = value.strip()
+                    break
+           
         # Extract feature list
         feature_list = []
         feature_panel = response.css('ul.feature-panel__ul')
@@ -134,12 +196,13 @@ class LookerSpider(scrapy.Spider):
             "fuel_type": car_meta.get("fuel_type"),
             "body_style": car_meta.get("body_style"),
             "engine_size": car_meta.get("engine_size"),
+            "hp": hp,
             "transmission": car_meta.get("transmission"),
             "year": car_meta.get("year"),
             "dealership_name": car_meta.get("dealership_name"),
-            "mpg": mpg,
-            "n_doors": n_doors,
-            "previous_owners": previous_owners,
+            "mpg": float(extract_numeric(mpg)),
+            "n_doors": int(extract_numeric(n_doors)),
+            "previous_owners": int(extract_numeric(previous_owners)),
             "droplet": droplet,
             "feature_list": ", ".join(feature_list),
         }
