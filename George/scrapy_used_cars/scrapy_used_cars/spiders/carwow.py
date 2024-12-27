@@ -9,8 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import re
-import signal
-import sys
 
 
 class CarwowSpider(scrapy.Spider):
@@ -35,11 +33,6 @@ class CarwowSpider(scrapy.Spider):
         self.scroll_pause_time = 0.5
         self.scroll_step = 500
         
-        # def signal_handler(sig, frame):
-        #     self.driver.quit()
-        #     sys.exit(0)
-
-        # signal.signal(signal.SIGINT, signal_handler)
 
     def parse_listing(self, car_data, body_type):
         """

@@ -90,11 +90,6 @@ class MasterSpider(scrapy.Spider):
         output["url"] = response.url
 
         # Helper function to clean numeric fields
-        # def clean_numeric(value):
-        #     try:
-        #         return float(str(value).replace(",", "").replace("£", "").strip())
-        #     except (ValueError, TypeError):
-        #         return None
         def clean_numeric(value):
             try:
                 value = re.sub(r'[^\d\.]', '', str(value).strip())
