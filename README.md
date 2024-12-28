@@ -22,7 +22,7 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 ---
 
-## Intoduction
+## Introduction
 
 In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price. This information helps provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
