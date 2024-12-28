@@ -29,7 +29,7 @@ In this project, we aimed to collect and analyse car listings from three website
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
 
-### Websites Scraped
+#### Websites Scraped
 
 -  **Carwow** : https://www.carwow.co.uk/used-cars
 -  **Lookers** : https://www.lookers.co.uk/used-cars
@@ -37,7 +37,7 @@ We utilise a combination of web scraping technologies and database management to
 
 Each website offers a unique set of data related to used car listings, including details like model, price, engine size, hp, mpg etc.
 
-### Tech Stack
+#### Tech Stack
 
 - **Scrapy**:  Orchestrated the web scraping process, data processing and data storgage.
 - **Selenium**: Helped us interact with dynamic content on the websites.
