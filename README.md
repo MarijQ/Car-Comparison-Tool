@@ -1,18 +1,18 @@
-# Used Cars Scraper
+# Used Cars Scrapers
 **Authors:**   Georgios Gkakos, Marij Qureshi, Het Suhagiya
 
-# Websites Permissions
+## Websites Permissions
 
 This project respects the robots.txt guidelines for the Carwow, Cargiant and Lookers websites. For details on what is allowed and disallowed for web crawlers, please refer to the robots.txt file included in this project.
 
 This project respects the restrictions set in the robots.txt file by avoiding scraping any disallowed paths or content. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices.
 
 
-# 1. Intoduction
+## 1. Intoduction
 
 In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price. This information helps provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
-# 2. Project Overview
+## 2. Project Overview
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
 
