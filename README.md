@@ -1,53 +1,46 @@
-# Used-Cars-Scraper
-ADD AUTHORS
-# Website Permissions.
+# Used Cars Scraper
+**Authors:**   Georgios Gkakos, Marij Qureshi, Het Suhagiya
 
-This project respects the robots.txt guidelines for the Carwow website. For details on what is allowed and disallowed for web crawlers, please refer to the robots.txt file included in this project.
+# Websites Permissions
+
+This project respects the robots.txt guidelines for the Carwow, Cargiant and Lookers websites. For details on what is allowed and disallowed for web crawlers, please refer to the robots.txt file included in this project.
 
 This project respects the restrictions set in the robots.txt file by avoiding scraping any disallowed paths or content. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices.
 
 
 # 1. Intoduction
 
-In this project, our goal was to gather and analyze car listings from three popular websites: Caewow, Lookers, and Cargaint. By scraping these websites, we aimed to create a database of car listings, including important details such as model, price, and location, to explore trends in the car market. The project involved using a variety of technologies to extract, process, and visualize the data, ultimately providing insights that could be useful for anyone interested in the car market.
+In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price. This information helps provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
 # 2. Project Overview
 
-In this section, we provide an overview of the technologies, tools, and websites used in the project. We also outline the flow of the project, from scraping the websites to visualizing the data.
-
-### Scrapers Used
-We used **Selenium** and **Splash** for web scraping:
-
-- **Selenium**: A powerful tool for automating web browsers, which helped us interact with dynamic content on the websites.
-- **Splash**: A headless browser designed for web scraping, which allowed us to render pages with JavaScript content before scraping.
+We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
 
 ### Tech Stack
-The following technologies were used throughout the project:
 
-- ADD SCRAPY
-- **Selenium**: Web scraping automation.
-- **Splash**: Headless browser rendering for dynamic content.
+- **Scrapy**: Web Scraping Framework that orchestrates the web scraping process, data processing and data storgage
+- **Selenium**: Tool for automating web browsers, which helped us interact with dynamic content on the websites.
+- **Splash**: Headless browser designed for web scraping, which allowed us to render pages with JavaScript content before scraping.
 - **PostgreSQL**: A relational database to store and process the scraped data.
 - **Python**: The main programming language used to write the scraping scripts, data processing, and dashboard logic.
 
-### Websites Scraped
-We focused on gathering data from the following car listing websites:
+# 3. Websites Scraped
 
-1. **Carwow**
-2. **Lookers**
-3. **Cargiant** ADD LINKS
+1. **Carwow** : https://www.carwow.co.uk/used-cars
+2. **Lookers** : https://www.lookers.co.uk/used-cars
+3. **Cargiant** : https://www.cargiant.co.uk/search/
 
-Each website offers a unique set of data related to car listings, including details like model, price, location, and availability. The goal was to compare the listings across these platforms and analyze trends.
+Each website offers a unique set of data related to used car listings, including details like model, price, engine size, hp, mpg etc.
 
-### Project Workflow
+### Project Flow
 
 1. **Scraping**: 
-   - The scraper extracts data from the selected websites using Selenium and Splash.
+   - The spiders extract data from the selected websites using Selenium and Splash.
    - Each website is crawled to gather car details like model, price, and location.
 
 2. **Data Storage**:
    - The scraped data is processed and stored in a **PostgreSQL** database.
-   - Data is organized into tables to facilitate querying and analysis.
+   - Data from all three websites is organised into a single table to facilitate querying and analysis.
 
 3. **Interactions with Tkinter**: FIX SECTIONS
 
