@@ -93,5 +93,5 @@ what else can be done, new methods (if any), potential improvements in the curre
 - ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
 
 # 7. Licence
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](License) file for more details.
 
