@@ -7,17 +7,20 @@ This project respects the robots.txt guidelines for the Carwow, Cargiant and Loo
 
 This project respects the restrictions set in the robots.txt file by avoiding scraping any disallowed paths or content. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices.
 
-Table of Contents
-Introduction
-Project Overview
-Websites Scraped
-Scraping and Data Collection
-Data Storage and Management
-Data Preparation
-User Interface (UI)
-Running the Code
-Future Work
-License
+## Table of Contents
+
+1. [Introduction](#Introduction)  
+2. [Project Overview](#project-overview)  
+3. [Websites Scraped](#websites-scraped)  
+4. [Scraping and Data Collection](#scraping-and-data-collection)  
+5. [Data Storage and Preperation](#data-storage-and-management)  
+6. [User Interface (UI)](#user-interface-(ui))  
+7. [Running the Code](#running-the-code)  
+8. [Future Improvements](#future-improvements)  
+9. [Team and Contact](#team-and-contact)
+10. [License](#license)
+
+---
 
 ## 1. Intoduction
 
