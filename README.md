@@ -10,15 +10,14 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 ## Table of Contents
 
 1. [Introduction](#Introduction)  
-2. [Project Overview](#project-overview)  
-3. [Websites Scraped](#websites-scraped)  
-4. [Scraping and Data Collection](#scraping-and-data-collection)  
-5. [Data Storage and Preperation](#data-storage-and-management)  
-6. [User Interface (UI)](#user-interface-(ui))  
-7. [Running the Code](#running-the-code)  
-8. [Future Improvements](#future-improvements)  
-9. [Team and Contact](#team-and-contact)
-10. [License](#license)
+2. [Project Overview](#project-overview)   
+3. [Scraping and Data Collection](#scraping-and-data-collection)  
+4. [Data Storage and Preperation](#data-storage-and-management)  
+5. [User Interface (UI)](#user-interface-(ui))  
+6. [Running the Code](#running-the-code)  
+7. [Future Improvements](#future-improvements)  
+8. [Team and Contact](#team-and-contact)
+9. [License](#license)
 
 ---
 
@@ -26,27 +25,28 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price. This information helps provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
-## 2. Project Overview
+## Project Overview
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
 
-### Tech Stack
+### Websites Scraped
 
-- **Scrapy**: Web Scraping Framework that orchestrates the web scraping process, data processing and data storgage
-- **Selenium**: Tool for automating web browsers, which helped us interact with dynamic content on the websites.
-- **Splash**: Headless browser designed for web scraping, which allowed us to render pages with JavaScript content before scraping.
-- **PostgreSQL**: A relational database to store and process the scraped data.
-- **Python**: The main programming language used to write the scraping scripts, data processing, and dashboard logic.
-
-# 3. Websites Scraped
-
-1. **Carwow** : https://www.carwow.co.uk/used-cars
-2. **Lookers** : https://www.lookers.co.uk/used-cars
-3. **Cargiant** : https://www.cargiant.co.uk/search/
+-  **Carwow** : https://www.carwow.co.uk/used-cars
+-  **Lookers** : https://www.lookers.co.uk/used-cars
+-  **Cargiant** : https://www.cargiant.co.uk/search/
 
 Each website offers a unique set of data related to used car listings, including details like model, price, engine size, hp, mpg etc.
 
-### Project Flow
+### Tech Stack
+
+- **Scrapy**:  Orchestrated the web scraping process, data processing and data storgage.
+- **Selenium**: Helped us interact with dynamic content on the websites.
+- **Splash**:  Allowed us to render pages with JavaScript content in a headless browser before scraping.
+- **PostgreSQL**: The relational database used to store and process the scraped data.
+- **Python**: The main programming language used to write the scraping scripts, data processing, and dashboard logic.
+- **Tkinter**: 
+
+## Scraping and Data Collection
 
 1. **Scraping**: 
    - The spiders extract data from the selected websites using Selenium and Splash.
