@@ -1,7 +1,6 @@
 # Used-Cars-Scraper
-
+ADD AUTHORS
 # Website Permissions.
-### 1. carwow.co.uk
 
 This project respects the robots.txt guidelines for the Carwow website. For details on what is allowed and disallowed for web crawlers, please refer to the robots.txt file included in this project.
 
@@ -25,10 +24,9 @@ We used **Selenium** and **Splash** for web scraping:
 ### Tech Stack
 The following technologies were used throughout the project:
 
+- ADD SCRAPY
 - **Selenium**: Web scraping automation.
 - **Splash**: Headless browser rendering for dynamic content.
-- **Docker**: Containerization to ensure the project can run in any environment consistently.
-- **Dash**: Framework for building interactive data visualizations and dashboards.
 - **PostgreSQL**: A relational database to store and process the scraped data.
 - **Python**: The main programming language used to write the scraping scripts, data processing, and dashboard logic.
 
@@ -37,12 +35,11 @@ We focused on gathering data from the following car listing websites:
 
 1. **Carwow**
 2. **Lookers**
-3. **Cargiant**
+3. **Cargiant** ADD LINKS
 
 Each website offers a unique set of data related to car listings, including details like model, price, location, and availability. The goal was to compare the listings across these platforms and analyze trends.
 
-### Project Flowchart
-The project follows this flow:
+### Project Workflow
 
 1. **Scraping**: 
    - The scraper extracts data from the selected websites using Selenium and Splash.
@@ -52,17 +49,22 @@ The project follows this flow:
    - The scraped data is processed and stored in a **PostgreSQL** database.
    - Data is organized into tables to facilitate querying and analysis.
 
-3. **Data Visualization**:
-   - The processed data is presented in interactive dashboards using **Dash**.
-   - Visualizations highlight trends, price ranges, and geographical distributions of car listings.
+3. **Interactions with Tkinter**: FIX SECTIONS
 
-4. **Deployment**:
-   - The entire project is containerized using **Docker**, ensuring the environment is reproducible and deployable on any machine.
 # 3. UI
 gif (one gif will show user gives input and another gif will show skipping some features) that demonstartes how the whole thing works. (full demonstration)
 
+
+
 # 4. Running the code (script)
 explain how to run the code, dependencies and requirements, file/directory structure
+ADD versions used 
+ADD commands for how to run the code
+ADD how the user can use tkinter
+
+
+
+
 
 # 5. Data Prep
 table of features used, explain missing values handling 
