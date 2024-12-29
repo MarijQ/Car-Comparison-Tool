@@ -105,7 +105,7 @@ class CarwowSpider(scrapy.Spider):
                     time.sleep(3)  # Allow the page to load
 
                     # Extract car details
-                    dealer_name = "N/A"
+                    dealer_name = None
                     try:
                         dealer_name = self.driver.find_element(By.CSS_SELECTOR, "div.dealership-info__title").text
                     except:
@@ -114,13 +114,13 @@ class CarwowSpider(scrapy.Spider):
                     car_data = {
                         "link": link,
                         "dealer_name": dealer_name,
-                        "car_name": "N/A",
-                        "price": "N/A",
-                        "year": "N/A",
-                        "mileage": "N/A",
-                        "engine_size": "N/A",
-                        "transmission": "N/A",
-                        "fuel": "N/A",
+                        "car_name": None,
+                        "price": None,
+                        "year": None,
+                        "mileage": None,
+                        "engine_size": None,
+                        "transmission": None,
+                        "fuel": None,
                     }
 
                     try:
