@@ -72,10 +72,9 @@ We developed three spiders, each tailored to efficiently scrape data from each w
   -  Additional Details: Droplet, List of Additional Features
 
 ## Data Storage and Preparation
-   - The scraped data is processed and stored in a **PostgreSQL** database.
-   - Data from all three websites is organised into a single table to facilitate querying and analysis
+The scraped data is processed and stored in a **PostgreSQL** database.
 
-Table's Structure and Description:
+**Table's Structure and Description:**
 | Column Name      | Data Type      | Description                                   |
 |------------------|----------------|-----------------------------------------------|
 | id               | SERIAL         | Primary key, auto-increments with each entry  |
