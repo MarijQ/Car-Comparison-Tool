@@ -1,4 +1,4 @@
-# Used Cars Scrapers
+# Used Cars Scraper
 **Authors:**   Georgios Gkakos, Marij Qureshi, Het Suhagiya
 
 ## Websites Permissions
