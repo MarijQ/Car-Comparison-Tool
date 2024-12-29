@@ -117,12 +117,32 @@ Calculation Methodology
 ---
 
 ## User Interface
+**Use Case**: Comprehensive Feature Input 
+- Users can specify all car features, whether they're aiming to buy and want to estimate a fair market price, or they're planning to sell and need to determine a competitive asking price based on detailed vehicle specifications
+  - Screenshot: Displays a complete feature input (price excluded) for a comprehensive overview
+![image](https://github.com/user-attachments/assets/05c7da5a-fe58-4bc8-a1fe-d5d007a20b56)
 
-
+Use Case: Partial Feature Input 
+- Ideal for users who may not have complete details about a car they wish to buy or sell, our tool allows for flexible input, providing estimates even with incomplete feature sets.
+  - Screenshot: Shows an example with partial feature input to demonstrate functionality with incomplete data
+![image](https://github.com/user-attachments/assets/179977e5-95f9-418c-ad97-4316e226cc15)
 
 ---
 
 ## Running the code
+To install the required packages, run the following command:
+```bash
+pip install -r requirements.txt
+```
+
+If you prefer to list the commands directly in the README without using a `requirements.txt` file, you can format it like this:
+
+Install the required packages by running:
+
+```bash
+pip install scrapy==2.5.0 scrapy-splash==0.7.2 twisted==21.7.0 selenium==4.27.1 webdriver-manager==4.0.2 psycopg2==2.9.10
+```
+
 explain how to run the code, dependencies and requirements, file/directory structure
 ADD versions used 
 ADD commands for how to run the code
