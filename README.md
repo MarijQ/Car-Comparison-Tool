@@ -1,4 +1,4 @@
-# Used Cars Scrapers
+# Used Cars Scraper
 **Authors:**   Georgios Gkakos, Marij Qureshi, Het Suhagiya
 
 ## Websites Permissions
@@ -13,7 +13,7 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 2. [Project Overview](#project-overview)   
 3. [Scraping and Data Collection](#scraping-and-data-collection)  
 4. [Data Storage and Preparation](#data-storage-and-preparation)  
-5. [User Interface (UI)](#user-interface-ui)  
+5. [User Interface](#user-interface)  
 6. [Running the Code](#running-the-code)  
 7. [Future Improvements](#future-improvements)  
 8. [Team and Contact](#team-and-contact)
@@ -23,11 +23,40 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 ## Introduction
 
-In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price. This information helps provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
+In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price and provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
 ## Project Overview
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
+
+--- Repository Structure ---
+
+```
+|-- scrapy_used_cars
+    |-- spiders
+        |-- __pycache__
+            |-- cargiant.cpython-311.pyc
+            |-- carwow.cpython-311.pyc
+            |-- lookers.cpython-311.pyc
+            |-- __init__.cpython-311.pyc
+        |-- cargiant.py
+        |-- carwow.py
+        |-- car_data.json
+        |-- lookers.py
+        |-- __init__.py
+    |-- __pycache__
+        |-- middlewares.cpython-311.pyc
+        |-- pipelines.cpython-311.pyc
+        |-- settings.cpython-311.pyc
+        |-- __init__.cpython-311.pyc
+    |-- items.py
+    |-- middlewares.py
+    |-- pipelines.py
+    |-- settings.py
+    |-- __init__.py
+|-- scrapy.cfg
+|-- user_v3.py
+```
 
 --- Websites Scraped ---
 
@@ -48,15 +77,12 @@ Each website offers a unique set of data related to used car listings, including
 
 ## Scraping and Data Collection
 
-1. **Scraping**: 
-   - The spiders extract data from the selected websites using Selenium and Splash.
-   - Each website is crawled to gather car details like model, price, and location.
 
 ## Data Storage and Preparation
    - The scraped data is processed and stored in a **PostgreSQL** database.
    - Data from all three websites is organised into a single table to facilitate querying and analysis.
 
-## User Interface (UI)
+## User Interface
 
 
 
@@ -91,6 +117,7 @@ ADD how the user can use tkinter
 - ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
 
 ## Team and Contact
-## Licence
+
+## License
 This project is licensed under the MIT License. See the [LICENSE](License) file for more details.
 
