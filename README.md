@@ -13,7 +13,7 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 2. [Project Overview](#project-overview)   
 3. [Scraping and Data Collection](#scraping-and-data-collection)  
 4. [Data Storage and Preparation](#data-storage-and-preparation)  
-5. [User Interface (UI)](#user-interface-(ui))  
+5. [User Interface (UI)](#user-interface-ui)  
 6. [Running the Code](#running-the-code)  
 7. [Future Improvements](#future-improvements)  
 8. [Team and Contact](#team-and-contact)
