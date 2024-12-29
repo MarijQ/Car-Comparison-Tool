@@ -29,35 +29,6 @@ In this project, we aimed to collect and analyse car listings from three website
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
 
---- Repository Structure ---
-
-```
-|-- scrapy_used_cars
-    |-- spiders
-        |-- __pycache__
-            |-- cargiant.cpython-311.pyc
-            |-- carwow.cpython-311.pyc
-            |-- lookers.cpython-311.pyc
-            |-- __init__.cpython-311.pyc
-        |-- cargiant.py
-        |-- carwow.py
-        |-- car_data.json
-        |-- lookers.py
-        |-- __init__.py
-    |-- __pycache__
-        |-- middlewares.cpython-311.pyc
-        |-- pipelines.cpython-311.pyc
-        |-- settings.cpython-311.pyc
-        |-- __init__.cpython-311.pyc
-    |-- items.py
-    |-- middlewares.py
-    |-- pipelines.py
-    |-- settings.py
-    |-- __init__.py
-|-- scrapy.cfg
-|-- user_v3.py
-```
-
 --- Websites Scraped ---
 
 -  **Carwow** : https://www.carwow.co.uk/used-cars
