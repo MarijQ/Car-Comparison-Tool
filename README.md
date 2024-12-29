@@ -130,7 +130,9 @@ Use Case: Partial Feature Input
 ---
 
 ## Running the code
-To install the required packages, run the following command:
+
+- **Installation**
+  -To install the required packages, run the following command:
 ```bash
 pip install -r requirements.txt
 ```
