@@ -4,9 +4,9 @@ import psycopg2
 from decimal import Decimal
 
 # Database connection parameters
-DB_NAME = "car_listings"
-DB_USER = "marij"
-DB_PASS = "marij"
+DB_NAME = "lookers"
+DB_USER = "postgres"
+DB_PASS = "postgres"
 DB_HOST = "localhost"
 
 
