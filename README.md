@@ -1,9 +1,9 @@
 # Used Cars Scraper
 
 > ### Note: Archived Repository
-> This repository represents the final completed version of the project (as of 29/12/2024) collaboratively built by:
+> This repository represents the completed version of the project (as of 29/12/2024) collaboratively built by:
 > 
-> [Marij Qureshi](https://github.com/MarijQ), [Het Suhagiya](https://github.com/HetSuhagiya), [Georgios Gkakos](https://github.com/GGkakos)
+> [Marij Qureshi](https://github.com/MarijQ), [Georgios Gkakos](https://github.com/GGkakos), [Het Suhagiya](https://github.com/HetSuhagiya)
 > 
 > This repository is no longer actively maintained. Please see individual forks for the most up-to-date versions.
 
@@ -215,8 +215,8 @@ scrapy crawl cargiant
 ## Team and Contact
 
 - **Marij Qureshi**: MEng Aeronautical Engineering (Imperial), MSc Data Science (Brunel), ex-EY Parthenon
-- **Het Suhagiya**: MSc Data Science (Brunel), BSc Information Technology 
 - **Georgios Gkakos**: MSc Data Science (Brunel), BSc Economics (AUTH)
+- **Het Suhagiya**: MSc Data Science (Brunel), BSc Information Technology 
 
 For questions, feel free to reach out via GitHub issues or email any of us.
 
