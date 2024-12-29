@@ -90,14 +90,14 @@ The scraped data is processed and stored in a **PostgreSQL** database.
 | mileage          | NUMERIC        | Total miles driven by the car                 |
 | fuel_type        | VARCHAR(50)    | Type of fuel used (e.g., Diesel, Petrol)      |
 | body_style       | VARCHAR(100)   | Style of the car body (e.g., Sedan, SUV)      |
-| engine_size      | VARCHAR(50)    | Engine size (e.g., 2.0L)                      |
-| hp               | VARCHAR(50)    | Horsepower of the car                         |
+| engine_size      | NUMERIC        | Engine size (e.g., 2.0)                       |
+| hp               | INT            | Horsepower of the car                         |
 | transmission     | VARCHAR(50)    | Type of transmission (e.g., Manual, Automatic)|
 | year             | INT            | Year of manufacture                           |
 | dealership_name  | VARCHAR(255)   | Name of the dealership selling the car        |
-| mpg              | VARCHAR(50)    | Miles per gallon                              |
-| n_doors          | VARCHAR(50)    | Number of doors                               |
-| previous_owners  | VARCHAR(50)    | Number of previous owners                     |
+| mpg              | NUMERIC        | Miles per gallon                              |
+| n_doors          | INT            | Number of doors                               |
+| previous_owners  | INT            | Number of previous owners                     |
 | droplet          | VARCHAR(50)    | Colour of the car                             |
 | feature_list     | TEXT           | List of additional features                   |
 | last_updated     | TIMESTAMP      | Timestamp of the last update to the record    |
