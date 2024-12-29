@@ -131,27 +131,35 @@ ADD how the user can use tkinter
 ---
 
 ## Future Improvements
-- Recommendation system
-- competitor analysis
-- car comparision based on the user inputs
-- Car Depreciation Prediction based on the car age, its original price, current price and the no. of owners
-- Web-Scraping: Add more sites like AutoTrader; improve anti-bot techniques.
-- Web-Scraping: Handle CAPTCHA and use proxy rotation for dynamic scraping.
-- ETL: Automate missing data handling; clean inconsistent records.
-- ETL: Schedule real-time scraping for fresh data syncs (daily scheduled scrape).
-- Analytics: Build ML models to predict car prices using features.
-- Analytics: Analyze multi-year trends for pricing and popular models.
-- UI: Upgrade GUI to modern web app with Flask or React.
-- UI: Add intelligent filters based on user preferences (e.g. combinations of filters)
-- NLP: Analyze seller descriptions for tone, sentiment, or key details.
-- ⁠Integrate an ML model that can handle missing values on the explanatory features and calculates the average price
-- ⁠Create a web application that provides a more attractive UI to the user to use.
-- ⁠Run all the scrapers in parallel on a distributed system (such as spark) to enhance the runtime.
-- ⁠Incorporate new websites to the database to make the calculation of the average price more representative of the current market.
-- ⁠Group the calculations of the average price by location to account for spatial variation in prices of used cars in the UK.
-- ⁠Add a tool that will calculate the insurance cost based on the generated average price among with other inputs (such as age of the user)
-- ⁠Enhance the runtime of the scrapers that have to load different pages to collect the data using VPN (parallelizing the process)
-- ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
+
+**Web Scraping**
+- Add more sources like AutoTrader and improve anti-bot techniques.
+- Implement CAPTCHA handling and proxy rotation for dynamic scraping.
+
+**ETL Processes**
+- Automate handling of missing data and clean up inconsistent records.
+- Implement daily scheduled scraping to ensure data freshness.
+
+**Machine Learning and Analytics**
+- Analyze multi-year trends for pricing and popular models.
+- Develop an ML model that handles missing values and calculates average prices.
+
+**User Interface Enhancements**
+- Upgrade to a modern web application using Flask or React.
+- Add intelligent filtering based on user preferences.
+
+**Natural Language Processing**
+- Analyze seller descriptions for tone, sentiment, and key details.
+
+**Advanced Features**
+- Predict car depreciation based on age, original price, current price, and number of owners.
+- Group average price calculations by location to reflect regional price variations.
+- Add a tool to estimate insurance costs based on the car's average price and user age.
+- Assess the impact of different car features on price through a linear model after handling missing data.
+
+**System Enhancements**
+- Scale up the web scraping using Scrapy Cloud or Scrapyd
+- Enhance scraper runtime by loading multiple pages simultaneously with VPN.
 
 ---
 
