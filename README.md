@@ -9,15 +9,16 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)  
+1. [Introduction](#introduction)  
 2. [Project Overview](#project-overview)   
 3. [Scraping and Data Collection](#scraping-and-data-collection)  
-4. [Data Storage and Preparation](#data-storage-and-preparation)  
-5. [User Interface](#user-interface)  
-6. [Running the Code](#running-the-code)  
-7. [Future Improvements](#future-improvements)  
-8. [Team and Contact](#team-and-contact)
-9. [License](#license)
+4. [Data Storage and Preparation](#data-storage-and-preparation)
+5. [Average Price Generation](#average-price-generation) 
+6. [User Interface](#user-interface)  
+7. [Running the Code](#running-the-code)  
+8. [Future Improvements](#future-improvements)  
+9. [Team and Contact](#team-and-contact)
+10. [License](#license)
 
 ---
 
@@ -47,14 +48,28 @@ Each website offers a unique set of data related to used car listings, including
 - **Tkinter**: Utilised to build an application that demonstrates user's interaction with the database  
 
 ## Scraping and Data Collection
-Three spiders were created, one for each website:
-- lookers.py: **Scrapy** to scrape most of the cars' features from the ajax api calls of the website that stored the data in json format and **Splash** to render the javascript content and scrape the extra feature list of cars
-- cargiant.py, carwow.py: **Scrapy** with **Selenium** to scrape the dynamically loaded data from the corresponding websites as splash could not handle the very deep structure of javascript and html of the two websites.
+We developed three spiders, each tailored to efficiently scrape data from each website:
 
-From all three websites, the data scraping of features was standardised so that the data can be accomodated in a common table in a database.
+**Spiders**
+- lookers.py:
 
-The following features were scraped: make, model, price, mileage, fuel type, body style, engine size, hp, transmission, year, dealership name, mpg, number of doors, previous owners, droplet, additional features list
+  - Tools Used: Utilizes Scrapy for scraping the bulk of car features directly from AJAX API calls, which return data in JSON format.
+  - Additional Rendering: Uses Splash to render JavaScript content on the website, enabling the scraping of additional feature lists of cars that are dynamically loaded.
 
+- cargiant.py and carwow.py:
+
+  - Tools Used: Employs Scrapy in conjunction with Selenium. This combination is crucial for handling the complex JavaScript and HTML structures found on these websites, which Splash alone could not adequately process.
+  
+**Data Standardisation**
+- To facilitate the integration of scraped data into a unified database schema, we standardised the extraction of the following features across all three websites:
+
+  -  Basic Car Information: Make, Model, Year, Price, Mileage
+  -  Specifications: Fuel Type, Body Style, Engine Size, Horsepower (hp)
+  -  Transmission Details: Type of Transmission
+  -  Dealership Data: Name of the Dealership
+  -  Efficiency and Capacity: Miles Per Gallon (mpg), Number of Doors
+  -  Ownership History: Number of Previous Owners
+  -  Additional Details: Droplet, List of Additional Features
 
 ## Data Storage and Preparation
    - The scraped data is processed and stored in a **PostgreSQL** database.
@@ -81,6 +96,16 @@ Table's Structure and Description:
 | droplet          | VARCHAR(50)    | Colour of the car                             |
 | feature_list     | TEXT           | List of additional features                   |
 | last_updated     | TIMESTAMP      | Timestamp of the last update to the record    |
+
+**Handling Missing Values**
+- Any missing values in the dataset were retained as is for the current implementation. Future updates may address these through appropriate imputation techniques to ensure comprehensive data analysis
+  
+**Database Interaction with Psycopg2**
+- We utilise the psycopg2 library to execute SQL-like queries directly from Python. When calculating the average price of cars, our queries are designed to consider only those car listings that fall within one standard deviation from the user-inputted value for each numeric attribute. For textual attributes, the matches must be exact.
+
+## Average Price Generation
+Calculation Methodology
+- Only listings that meet these specified criteria are included in the calculations of the average price. Both the standard deviation and average price functions in psycopg2 inherently exclude rows with missing values in the relevant columns, ensuring that our statistics are computed based on complete and relevant data only.
 
 ## User Interface
 
@@ -121,3 +146,4 @@ ADD how the user can use tkinter
 ## License
 This project is licensed under the MIT License. See the [LICENSE](License) file for more details.
 
+---
