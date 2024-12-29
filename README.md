@@ -153,6 +153,8 @@ ADD how the user can use tkinter
 - ⁠Enhance the runtime of the scrapers that have to load different pages to collect the data using VPN (parallelizing the process)
 - ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
 
+---
+
 ## Team and Contact
 
 - **Marij**: MEng Aeronautical (Imperial), MSc Data Science (Brunel), ex-EY Parthenon
