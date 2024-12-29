@@ -8,7 +8,7 @@ class UsedCarsPipeline:
         self.connection = psycopg2.connect(
             dbname="lookers",
             user="postgres",
-            password="C1k3nR@!s",
+            password="postgres",
             host="localhost",
         )
         self.cursor = self.connection.cursor()
@@ -25,13 +25,13 @@ class UsedCarsPipeline:
                 fuel_type VARCHAR(50),
                 body_style VARCHAR(100),
                 engine_size VARCHAR(50),
-                hp VARCHAR(50),
+                hp INT,
                 transmission VARCHAR(50),
                 year INT,
                 dealership_name VARCHAR(255),
                 mpg VARCHAR(50),
-                n_doors VARCHAR(50),
-                previous_owners VARCHAR(50),
+                n_doors INT,
+                previous_owners INT,
                 droplet VARCHAR(50),
                 feature_list TEXT,
                 last_updated TIMESTAMP
