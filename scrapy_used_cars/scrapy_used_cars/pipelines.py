@@ -2,13 +2,13 @@ import psycopg2
 from datetime import datetime
 
 
-class CargiantFinalPipeline:
+class UsedCarsPipeline:
     def open_spider(self, spider):
         # Connect to PostgreSQL when the spider opens
         self.connection = psycopg2.connect(
-            dbname="car_listings",
-            user="marij",
-            password="marij",
+            dbname="lookers",
+            user="postgres",
+            password="C1k3nR@!s",
             host="localhost",
         )
         self.cursor = self.connection.cursor()
@@ -51,11 +51,11 @@ class CargiantFinalPipeline:
             self.cursor.execute(
                 """
                 INSERT INTO car_db (
-                    make, model, price, mileage, fuel_type, body_style, engine_size,
+                    make, model, price, mileage, fuel_type, body_style, engine_size, hp,
                     transmission, year, dealership_name, mpg, n_doors, previous_owners,
                     droplet, feature_list, last_updated
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (id) DO UPDATE SET
                     make = EXCLUDED.make,
                     model = EXCLUDED.model,
@@ -64,6 +64,7 @@ class CargiantFinalPipeline:
                     fuel_type = EXCLUDED.fuel_type,
                     body_style = EXCLUDED.body_style,
                     engine_size = EXCLUDED.engine_size,
+                    hp = EXCLUDED.hp,
                     transmission = EXCLUDED.transmission,
                     year = EXCLUDED.year,
                     dealership_name = EXCLUDED.dealership_name,
@@ -82,14 +83,15 @@ class CargiantFinalPipeline:
                     item.get("fuel_type"),
                     item.get("body_style"),
                     item.get("engine_size"),
+                    item.get("hp"),
                     item.get("transmission"),
                     int(item.get("year")) if item.get("year") else None,
-                    item.get("dealership_name"),  # Placeholder
-                    item.get("mpg"),  # Placeholder
-                    item.get("n_doors"),  # Placeholder
-                    item.get("previous_owners"),  # Placeholder
-                    item.get("droplet"),  # Placeholder
-                    item.get("feature_list"),  # Placeholder
+                    item.get("dealership_name"), 
+                    item.get("mpg"), 
+                    item.get("n_doors"), 
+                    item.get("previous_owners"), 
+                    item.get("droplet"), 
+                    item.get("feature_list"),  
                     datetime.now(),
                 ),
             )

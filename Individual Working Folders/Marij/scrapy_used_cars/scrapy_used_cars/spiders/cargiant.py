@@ -10,14 +10,15 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import logging
-import re
+
+PAGES = 2
+LISTINGS_PER_PAGE = 2
 
 
 class MasterSpider(scrapy.Spider):
     name = "cargiant"
     start_urls = ["https://www.cargiant.co.uk/search/all/all"]
-    scraped_urls = set()  # Set to keep track of scraped URLs
-    
+
     def __init__(self, *args, **kwargs):
         super(MasterSpider, self).__init__(*args, **kwargs)
         chrome_options = Options()
@@ -29,9 +30,9 @@ class MasterSpider(scrapy.Spider):
     def parse(self, response):
         self.driver.get(response.url)
 
-        # for page_num in range(PAGES):
-        #     self.logger.info(f"Processing page {page_num + 1}")
-        while True:
+        for page_num in range(PAGES):
+            self.logger.info(f"Processing page {page_num + 1}")
+
             # Wait for the listings to load
             try:
                 WebDriverWait(self.driver, 10).until(
@@ -56,14 +57,12 @@ class MasterSpider(scrapy.Spider):
             if not listings:
                 self.logger.warning("No listings found!")
 
-            for listing in listings:
+            for listing in listings[:LISTINGS_PER_PAGE]:
                 car_url = listing.attrib.get("href")
                 if car_url:
                     # Construct the absolute URL
                     full_url = f"https://www.cargiant.co.uk{car_url}"
-                    if full_url not in self.scraped_urls:
-                        self.scraped_urls.add(full_url)
-                        yield scrapy.Request(url=full_url, callback=self.parse_listing)
+                    yield scrapy.Request(url=full_url, callback=self.parse_listing)
                 else:
                     self.logger.warning("No URL found in a listing.")
 
@@ -83,7 +82,7 @@ class MasterSpider(scrapy.Spider):
     def parse_listing(self, response):
         self.logger.info(f"Processing next listing ...")
         self.driver.get(response.url)
-        time.sleep(1)  # Wait for the page to load
+        time.sleep(0.2)  # Wait for the page to load
 
         # Initialize dictionary for output
         output = {}
@@ -92,8 +91,7 @@ class MasterSpider(scrapy.Spider):
         # Helper function to clean numeric fields
         def clean_numeric(value):
             try:
-                value = re.sub(r'[^\d\.]', '', str(value).strip())
-                return float(value)
+                return float(str(value).replace(",", "").replace("£", "").strip())
             except (ValueError, TypeError):
                 return None
 
@@ -104,24 +102,8 @@ class MasterSpider(scrapy.Spider):
             )
             title = title_element.text.strip()
             title_parts = title.split(None, 1)  # Split into make and model
-            # List of multi-word car makes
-            multi_word_makes = ["Land Rover"]
-
-            # Initialize make and model
-            make = ""
-            model = ""
-
-            # Check if the first two words form a multi-word make
-            if len(title_parts) >= 2 and f"{title_parts[0]} {title_parts[1]}" in multi_word_makes:
-                make = f"{title_parts[0]} {title_parts[1]}"
-                model = " ".join(title_parts[2:])  # Remaining parts as model
-            else:
-                make = title_parts[0]  # First word as make
-                model = " ".join(title_parts[1:])  # Remaining parts as model
-            
-            output["make"] = make
-            output["model"] = model
-            
+            output["make"] = title_parts[0]
+            output["model"] = title_parts[1] if len(title_parts) > 1 else None
         except Exception as e:
             self.logger.error(f"Error extracting title: {e}")
             output["make"] = None
@@ -163,7 +145,7 @@ class MasterSpider(scrapy.Spider):
         output["previous_owners"] = clean_numeric(details.get("Keepers"))
 
         # Extract Colour
-        output["droplet"] = details.get("Colour")
+        output["colour"] = details.get("Colour")
 
         # Extract Features List
         try:
@@ -227,8 +209,7 @@ class MasterSpider(scrapy.Spider):
             output["engine_size"] = None
             output["hp"] = None
             output["mpg"] = None
-        output["dealership_name"] = 'Cargiant'
-        
+
         # Yield the output as an item
         yield output
 

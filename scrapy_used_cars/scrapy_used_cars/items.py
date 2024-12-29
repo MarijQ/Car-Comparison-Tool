@@ -6,7 +6,7 @@
 import scrapy
 
 
-class CargiantFinalItem(scrapy.Item):
+class UsedCarsItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
