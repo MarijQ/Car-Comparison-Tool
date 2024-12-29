@@ -144,15 +144,38 @@ pip install -r requirements.txt
 If you prefer to list the commands directly in the README without using a `requirements.txt` file, you can format it like this:
 
 Install the required packages by running:
-
 ```bash
 pip install scrapy==2.5.0 scrapy-splash==0.7.2 twisted==21.7.0 selenium==4.27.1 webdriver-manager==4.0.2 psycopg2==2.9.10
 ```
 
-explain how to run the code, dependencies and requirements, file/directory structure
-ADD versions used 
-ADD commands for how to run the code
-ADD how the user can use tkinter
+- **Initialise Scrapy-Splash (Note: You need to install docker)**
+```bash
+docker run -d -p 8050:8050 scrapinghub/splash
+docker run -d -p 8052:8050 scrapinghub/splash
+```
+
+- **Crawl the Spiders**
+```bash
+scrapy crawl lookers
+```
+```bash
+scrapy crawl carwow
+```
+```bash
+scrapy crawl cargiant
+```
+- **Run the Application**
+1) Using the Command Line:
+  - Open your command prompt or terminal.
+  - Navigate to the project directory.
+  - Execute the following command, replacing the placeholders with your actual paths:
+```bash
+& <path_to_python>/python.exe "<path_to_repository>/Used-Cars-Scraper/scrapy_used_cars/GUI.py"
+```
+2) Using an IDE:
+  - Open the project in your preferred Integrated Development Environment (IDE) like PyCharm, VSCode, or any other that supports Python development.
+  - Navigate to GUI.py in the project file explorer.
+  - Use the Run button typically found in the toolbar or right-click the file and select Run 'GUI.py' to execute the script.
 
 ---
 
