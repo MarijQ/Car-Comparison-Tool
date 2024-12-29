@@ -12,7 +12,7 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 1. [Introduction](#Introduction)  
 2. [Project Overview](#project-overview)   
 3. [Scraping and Data Collection](#scraping-and-data-collection)  
-4. [Data Storage and Preperation](#data-storage-and-management)  
+4. [Data Storage and Preparation](#data-storage-and-preparation)  
 5. [User Interface (UI)](#user-interface-(ui))  
 6. [Running the Code](#running-the-code)  
 7. [Future Improvements](#future-improvements)  
@@ -39,12 +39,12 @@ Each website offers a unique set of data related to used car listings, including
 
 --- Tech Stack ---
 
-- **Scrapy**:  Orchestrated the web scraping process, data processing and data storgage.
+- **Scrapy**:  Orchestrated the web scraping process, data processing and data storage.
 - **Selenium**: Helped us interact with dynamic content on the websites.
 - **Splash**:  Allowed us to render pages with JavaScript content in a headless browser before scraping.
 - **PostgreSQL**:  Used to store and process the scraped data.
 - **Python**:  Used to write the scraping scripts, data processing, and dashboard logic.
-- **Tkinter**: 
+- **Tkinter**: Utilised to build an application that demonstrates user's interaction with the database  
 
 ## Scraping and Data Collection
 
@@ -52,33 +52,22 @@ Each website offers a unique set of data related to used car listings, including
    - The spiders extract data from the selected websites using Selenium and Splash.
    - Each website is crawled to gather car details like model, price, and location.
 
-2. **Data Storage**:
+## Data Storage and Preparation
    - The scraped data is processed and stored in a **PostgreSQL** database.
    - Data from all three websites is organised into a single table to facilitate querying and analysis.
 
-3. **Interactions with Tkinter**: FIX SECTIONS
-
-# 3. UI
-gif (one gif will show user gives input and another gif will show skipping some features) that demonstartes how the whole thing works. (full demonstration)
+## User Interface (UI)
 
 
 
-# 4. Running the code (script)
+
+## Running the code
 explain how to run the code, dependencies and requirements, file/directory structure
 ADD versions used 
 ADD commands for how to run the code
 ADD how the user can use tkinter
 
-
-
-
-
-# 5. Data Prep
-table of features used, explain missing values handling 
-
-# 6. Future Work
-what else can be done, new methods (if any), potential improvements in the current work.
-
+## Future Improvements
 - Recommendation system
 - competitor analysis
 - car comparision based on the user inputs
@@ -101,6 +90,7 @@ what else can be done, new methods (if any), potential improvements in the curre
 - ⁠Enhance the runtime of the scrapers that have to load different pages to collect the data using VPN (parallelizing the process)
 - ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
 
-# 7. Licence
+## Team and Contact
+## Licence
 This project is licensed under the MIT License. See the [LICENSE](License) file for more details.
 
