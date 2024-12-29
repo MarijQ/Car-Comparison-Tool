@@ -9,15 +9,16 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)  
+1. [Introduction](#introduction)  
 2. [Project Overview](#project-overview)   
 3. [Scraping and Data Collection](#scraping-and-data-collection)  
-4. [Data Storage and Preparation](#data-storage-and-preparation)  
-5. [User Interface](#user-interface)  
-6. [Running the Code](#running-the-code)  
-7. [Future Improvements](#future-improvements)  
-8. [Team and Contact](#team-and-contact)
-9. [License](#license)
+4. [Data Storage and Preparation](#data-storage-and-preparation)
+5. [Average Price Generation](#average-price-generation) 
+6. [User Interface](#user-interface)  
+7. [Running the Code](#running-the-code)  
+8. [Future Improvements](#future-improvements)  
+9. [Team and Contact](#team-and-contact)
+10. [License](#license)
 
 ---
 
@@ -25,38 +26,11 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price and provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
+---
+
 ## Project Overview
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
-
---- Repository Structure ---
-
-```
-|-- scrapy_used_cars
-    |-- spiders
-        |-- __pycache__
-            |-- cargiant.cpython-311.pyc
-            |-- carwow.cpython-311.pyc
-            |-- lookers.cpython-311.pyc
-            |-- __init__.cpython-311.pyc
-        |-- cargiant.py
-        |-- carwow.py
-        |-- car_data.json
-        |-- lookers.py
-        |-- __init__.py
-    |-- __pycache__
-        |-- middlewares.cpython-311.pyc
-        |-- pipelines.cpython-311.pyc
-        |-- settings.cpython-311.pyc
-        |-- __init__.cpython-311.pyc
-    |-- items.py
-    |-- middlewares.py
-    |-- pipelines.py
-    |-- settings.py
-    |-- __init__.py
-|-- scrapy.cfg
-|-- user_v3.py
-```
 
 --- Websites Scraped ---
 
@@ -75,49 +49,151 @@ Each website offers a unique set of data related to used car listings, including
 - **Python**:  Used to write the scraping scripts, data processing, and dashboard logic.
 - **Tkinter**: Utilised to build an application that demonstrates user's interaction with the database  
 
-## Scraping and Data Collection
+---
 
+## Scraping and Data Collection
+We developed three spiders, each tailored to efficiently scrape data from each website:
+
+**Spiders**
+- lookers.py:
+
+  - Tools Used: Utilizes Scrapy for scraping the bulk of car features directly from AJAX API calls, which return data in JSON format.
+  - Additional Rendering: Uses Splash to render JavaScript content on the website, enabling the scraping of additional feature lists of cars that are dynamically loaded.
+
+- cargiant.py and carwow.py:
+
+  - Tools Used: Employs Scrapy in conjunction with Selenium. This combination is crucial for handling the complex JavaScript and HTML structures found on these websites, which Splash alone could not adequately process.
+  
+**Data Standardisation**
+- To facilitate the integration of scraped data into a unified database schema, we standardised the extraction of the following features across all three websites:
+
+  -  Basic Car Information: Make, Model, Year, Price, Mileage
+  -  Specifications: Fuel Type, Body Style, Engine Size, Horsepower (hp)
+  -  Transmission Details: Type of Transmission
+  -  Dealership Data: Name of the Dealership
+  -  Efficiency and Capacity: Miles Per Gallon (mpg), Number of Doors
+  -  Ownership History: Number of Previous Owners
+  -  Additional Details: Droplet, List of Additional Features
+
+---
 
 ## Data Storage and Preparation
-   - The scraped data is processed and stored in a **PostgreSQL** database.
-   - Data from all three websites is organised into a single table to facilitate querying and analysis.
+The scraped data is processed and stored in a **PostgreSQL** database.
+
+**Table's Structure and Description:**
+| Column Name      | Data Type      | Description                                   |
+|------------------|----------------|-----------------------------------------------|
+| id               | SERIAL         | Primary key, auto-increments with each entry  |
+| make             | VARCHAR(100)   | Brand of the car                              |
+| model            | VARCHAR(100)   | Model of the car                              |
+| price            | NUMERIC        | Sale price of the car                         |
+| mileage          | NUMERIC        | Total miles driven by the car                 |
+| fuel_type        | VARCHAR(50)    | Type of fuel used (e.g., Diesel, Petrol)      |
+| body_style       | VARCHAR(100)   | Style of the car body (e.g., Sedan, SUV)      |
+| engine_size      | NUMERIC        | Engine size (e.g., 2.0)                       |
+| hp               | INT            | Horsepower of the car                         |
+| transmission     | VARCHAR(50)    | Type of transmission (e.g., Manual, Automatic)|
+| year             | INT            | Year of manufacture                           |
+| dealership_name  | VARCHAR(255)   | Name of the dealership selling the car        |
+| mpg              | NUMERIC        | Miles per gallon                              |
+| n_doors          | INT            | Number of doors                               |
+| previous_owners  | INT            | Number of previous owners                     |
+| droplet          | VARCHAR(50)    | Colour of the car                             |
+| feature_list     | TEXT           | List of additional features                   |
+| last_updated     | TIMESTAMP      | Timestamp of the last update to the record    |
+
+**Handling Missing Values**
+- Any missing values in the dataset were retained as is for the current implementation. Future updates may address these through appropriate imputation techniques to ensure comprehensive data analysis
+  
+**Database Interaction with Psycopg2**
+- We utilise the psycopg2 library to execute SQL-like queries directly from Python. When calculating the average price of cars, our queries are designed to consider only those car listings that fall within one standard deviation from the user-inputted value for each numeric attribute. For textual attributes, the matches must be exact.
+
+---
+
+## Average Price Generation
+Calculation Methodology
+- Only listings that meet these specified criteria are included in the calculations of the average price. Both the standard deviation and average price functions in psycopg2 inherently exclude rows with missing values in the relevant columns, ensuring that our statistics are computed based on complete and relevant data only.
+
+---
 
 ## User Interface
+**Use Case**: Comprehensive Feature Input 
+- Users can specify all car features, whether they're aiming to buy and want to estimate a fair market price, or they're planning to sell and need to determine a competitive asking price based on detailed vehicle specifications
+  - Screenshot: Displays a complete feature input (price excluded) for a comprehensive overview
+![image](https://github.com/user-attachments/assets/05c7da5a-fe58-4bc8-a1fe-d5d007a20b56)
 
+Use Case: Partial Feature Input 
+- Ideal for users who may not have complete details about a car they wish to buy or sell, our tool allows for flexible input, providing estimates even with incomplete feature sets.
+  - Screenshot: Shows an example with partial feature input to demonstrate functionality with incomplete data
+![image](https://github.com/user-attachments/assets/179977e5-95f9-418c-ad97-4316e226cc15)
 
-
+---
 
 ## Running the code
+To install the required packages, run the following command:
+```bash
+pip install -r requirements.txt
+```
+
+If you prefer to list the commands directly in the README without using a `requirements.txt` file, you can format it like this:
+
+Install the required packages by running:
+
+```bash
+pip install scrapy==2.5.0 scrapy-splash==0.7.2 twisted==21.7.0 selenium==4.27.1 webdriver-manager==4.0.2 psycopg2==2.9.10
+```
+
 explain how to run the code, dependencies and requirements, file/directory structure
 ADD versions used 
 ADD commands for how to run the code
 ADD how the user can use tkinter
 
+---
+
 ## Future Improvements
-- Recommendation system
-- competitor analysis
-- car comparision based on the user inputs
-- Car Depreciation Prediction based on the car age, its original price, current price and the no. of owners
-- Web-Scraping: Add more sites like AutoTrader; improve anti-bot techniques.
-- Web-Scraping: Handle CAPTCHA and use proxy rotation for dynamic scraping.
-- ETL: Automate missing data handling; clean inconsistent records.
-- ETL: Schedule real-time scraping for fresh data syncs (daily scheduled scrape).
-- Analytics: Build ML models to predict car prices using features.
-- Analytics: Analyze multi-year trends for pricing and popular models.
-- UI: Upgrade GUI to modern web app with Flask or React.
-- UI: Add intelligent filters based on user preferences (e.g. combinations of filters)
-- NLP: Analyze seller descriptions for tone, sentiment, or key details.
-- ⁠Integrate an ML model that can handle missing values on the explanatory features and calculates the average price
-- ⁠Create a web application that provides a more attractive UI to the user to use.
-- ⁠Run all the scrapers in parallel on a distributed system (such as spark) to enhance the runtime.
-- ⁠Incorporate new websites to the database to make the calculation of the average price more representative of the current market.
-- ⁠Group the calculations of the average price by location to account for spatial variation in prices of used cars in the UK.
-- ⁠Add a tool that will calculate the insurance cost based on the generated average price among with other inputs (such as age of the user)
-- ⁠Enhance the runtime of the scrapers that have to load different pages to collect the data using VPN (parallelizing the process)
-- ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
+
+**Web Scraping**
+- Add more sources like AutoTrader and improve anti-bot techniques.
+- Implement CAPTCHA handling and proxy rotation for dynamic scraping.
+
+**ETL Processes**
+- Automate handling of missing data and clean up inconsistent records.
+- Implement daily scheduled scraping to ensure data freshness.
+
+**Machine Learning and Analytics**
+- Analyze multi-year trends for pricing and popular models.
+- Develop an ML model that handles missing values and calculates average prices.
+
+**User Interface Enhancements**
+- Upgrade to a modern web application using Flask or React.
+- Add intelligent filtering based on user preferences.
+
+**Natural Language Processing**
+- Analyze seller descriptions for tone, sentiment, and key details.
+
+**Advanced Features**
+- Predict car depreciation based on age, original price, current price, and number of owners.
+- Group average price calculations by location to reflect regional price variations.
+- Add a tool to estimate insurance costs based on the car's average price and user age.
+- Assess the impact of different car features on price through a linear model after handling missing data.
+
+**System Enhancements**
+- Scale up the web scraping using Scrapy Cloud or Scrapyd
+- Enhance scraper runtime by loading multiple pages simultaneously with VPN.
+
+---
 
 ## Team and Contact
+
+- **Marij**: MEng Aeronautical (Imperial), MSc Data Science (Brunel), ex-EY Parthenon
+- **Het**: MSc Data Science (Brunel), BSc Information Technology 
+- **George**: MSc Data Science (Brunel), BSc Economics (AUTH)
+
+For questions, feel free to reach out via GitHub issues or email any of us.
+
+---
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](License) file for more details.
 
+---
