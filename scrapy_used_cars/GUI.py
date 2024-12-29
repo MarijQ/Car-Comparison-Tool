@@ -36,6 +36,7 @@ class CarFilterApp:
             "n_doors": "numeric",
             "previous_owners": "numeric",
             "engine_size": "numeric",
+            "hp": "numeric"
         }
 
         self.entries = {}
