@@ -47,11 +47,40 @@ Each website offers a unique set of data related to used car listings, including
 - **Tkinter**: Utilised to build an application that demonstrates user's interaction with the database  
 
 ## Scraping and Data Collection
+Three spiders were created, one for each website:
+- lookers.py: **Scrapy** to scrape most of the cars' features from the ajax api calls of the website that stored the data in json format and **Splash** to render the javascript content and scrape the extra feature list of cars
+- cargiant.py, carwow.py: **Scrapy** with **Selenium** to scrape the dynamically loaded data from the corresponding websites as splash could not handle the very deep structure of javascript and html of the two websites.
+
+From all three websites, the data scraping of features was standardised so that the data can be accomodated in a common table in a database.
+
+The following features were scraped: make, model, price, mileage, fuel type, body style, engine size, hp, transmission, year, dealership name, mpg, number of doors, previous owners, droplet, additional features list
 
 
 ## Data Storage and Preparation
    - The scraped data is processed and stored in a **PostgreSQL** database.
-   - Data from all three websites is organised into a single table to facilitate querying and analysis.
+   - Data from all three websites is organised into a single table to facilitate querying and analysis
+
+Table's Structure and Description:
+| Column Name      | Data Type      | Description                                   |
+|------------------|----------------|-----------------------------------------------|
+| id               | SERIAL         | Primary key, auto-increments with each entry  |
+| make             | VARCHAR(100)   | Brand of the car                              |
+| model            | VARCHAR(100)   | Model of the car                              |
+| price            | NUMERIC        | Sale price of the car                         |
+| mileage          | NUMERIC        | Total miles driven by the car                 |
+| fuel_type        | VARCHAR(50)    | Type of fuel used (e.g., Diesel, Petrol)      |
+| body_style       | VARCHAR(100)   | Style of the car body (e.g., Sedan, SUV)      |
+| engine_size      | VARCHAR(50)    | Engine size (e.g., 2.0L)                      |
+| hp               | VARCHAR(50)    | Horsepower of the car                         |
+| transmission     | VARCHAR(50)    | Type of transmission (e.g., Manual, Automatic)|
+| year             | INT            | Year of manufacture                           |
+| dealership_name  | VARCHAR(255)   | Name of the dealership selling the car        |
+| mpg              | VARCHAR(50)    | Miles per gallon                              |
+| n_doors          | VARCHAR(50)    | Number of doors                               |
+| previous_owners  | VARCHAR(50)    | Number of previous owners                     |
+| droplet          | VARCHAR(50)    | Colour of the car                             |
+| feature_list     | TEXT           | List of additional features                   |
+| last_updated     | TIMESTAMP      | Timestamp of the last update to the record    |
 
 ## User Interface
 
