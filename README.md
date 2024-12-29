@@ -26,6 +26,8 @@ This project respects the restrictions set in the robots.txt file by avoiding sc
 
 In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price and provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
 
+---
+
 ## Project Overview
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
@@ -46,6 +48,8 @@ Each website offers a unique set of data related to used car listings, including
 - **PostgreSQL**:  Used to store and process the scraped data.
 - **Python**:  Used to write the scraping scripts, data processing, and dashboard logic.
 - **Tkinter**: Utilised to build an application that demonstrates user's interaction with the database  
+
+---
 
 ## Scraping and Data Collection
 We developed three spiders, each tailored to efficiently scrape data from each website:
@@ -70,6 +74,8 @@ We developed three spiders, each tailored to efficiently scrape data from each w
   -  Efficiency and Capacity: Miles Per Gallon (mpg), Number of Doors
   -  Ownership History: Number of Previous Owners
   -  Additional Details: Droplet, List of Additional Features
+
+---
 
 ## Data Storage and Preparation
 The scraped data is processed and stored in a **PostgreSQL** database.
@@ -102,20 +108,27 @@ The scraped data is processed and stored in a **PostgreSQL** database.
 **Database Interaction with Psycopg2**
 - We utilise the psycopg2 library to execute SQL-like queries directly from Python. When calculating the average price of cars, our queries are designed to consider only those car listings that fall within one standard deviation from the user-inputted value for each numeric attribute. For textual attributes, the matches must be exact.
 
+---
+
 ## Average Price Generation
 Calculation Methodology
 - Only listings that meet these specified criteria are included in the calculations of the average price. Both the standard deviation and average price functions in psycopg2 inherently exclude rows with missing values in the relevant columns, ensuring that our statistics are computed based on complete and relevant data only.
+
+---
 
 ## User Interface
 
 
 
+---
 
 ## Running the code
 explain how to run the code, dependencies and requirements, file/directory structure
 ADD versions used 
 ADD commands for how to run the code
 ADD how the user can use tkinter
+
+---
 
 ## Future Improvements
 - Recommendation system
@@ -141,6 +154,14 @@ ADD how the user can use tkinter
 - ⁠How a difference in features might impact the price (for example a car having a 20mpg less than the other) through a linear model (after handling missing values)
 
 ## Team and Contact
+
+- **Marij**: MEng Aeronautical (Imperial), MSc Data Science (Brunel), ex-EY Parthenon
+- **Het**: MSc Data Science (Brunel), BSc Information Technology 
+- **George**: MSc Data Science (Brunel), BSc Economics (AUTH)
+
+For questions, feel free to reach out via GitHub issues or email any of us.
+
+---
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](License) file for more details.
