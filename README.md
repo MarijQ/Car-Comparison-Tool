@@ -1,11 +1,15 @@
 # Used Cars Scraper
-**Authors:**   Georgios Gkakos, Marij Qureshi, Het Suhagiya
 
-## Websites Permissions
+> ### Note: Archived Repository
+> This repository represents the final completed version of the project (as of 29/12/2024) collaboratively built by:
+> 
+> [Marij Qureshi](https://github.com/MarijQ), [Het Suhagiya](https://github.com/HetSuhagiya), [Georgios Gkakos](https://github.com/GGkakos)
+> 
+> This repository is no longer actively maintained. Please see individual forks for the most up-to-date versions.
 
-This project respects the robots.txt guidelines for the Carwow, Cargiant and Lookers websites. For details on what is allowed and disallowed for web crawlers, please refer to the robots.txt file included in this project.
+## Website Permissions
 
-This project respects the restrictions set in the robots.txt file by avoiding scraping any disallowed paths or content. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices.
+This project respects the terms and conditions for the Carwow, Cargiant and Lookers websites at the time of development. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices. For details on what is allowed and disallowed for web crawlers when using these tools, please refer to the latest site terms and robots.txt files.
 
 ## Table of Contents
 
@@ -32,7 +36,7 @@ In this project, we aimed to collect and analyse car listings from three website
 
 We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
 
---- Websites Scraped ---
+### Websites Scraped
 
 -  **Carwow** : https://www.carwow.co.uk/used-cars
 -  **Lookers** : https://www.lookers.co.uk/used-cars
@@ -40,7 +44,7 @@ We utilise a combination of web scraping technologies and database management to
 
 Each website offers a unique set of data related to used car listings, including details like model, price, engine size, hp, mpg etc.
 
---- Tech Stack ---
+### Tech Stack
 
 - **Scrapy**:  Orchestrated the web scraping process, data processing and data storage.
 - **Selenium**: Helped us interact with dynamic content on the websites.
@@ -130,7 +134,9 @@ Use Case: Partial Feature Input
 ---
 
 ## Running the code
-To install the required packages, run the following command:
+
+- **Installation**
+  -To install the required packages, run the following command:
 ```bash
 pip install -r requirements.txt
 ```
@@ -138,15 +144,38 @@ pip install -r requirements.txt
 If you prefer to list the commands directly in the README without using a `requirements.txt` file, you can format it like this:
 
 Install the required packages by running:
-
 ```bash
 pip install scrapy==2.5.0 scrapy-splash==0.7.2 twisted==21.7.0 selenium==4.27.1 webdriver-manager==4.0.2 psycopg2==2.9.10
 ```
 
-explain how to run the code, dependencies and requirements, file/directory structure
-ADD versions used 
-ADD commands for how to run the code
-ADD how the user can use tkinter
+- **Initialise Scrapy-Splash (Note: You need to install docker)**
+```bash
+docker run -d -p 8050:8050 scrapinghub/splash
+docker run -d -p 8052:8050 scrapinghub/splash
+```
+
+- **Crawl the Spiders**
+```bash
+scrapy crawl lookers
+```
+```bash
+scrapy crawl carwow
+```
+```bash
+scrapy crawl cargiant
+```
+- **Run the Application**
+1) Using the Command Line:
+  - Open your command prompt or terminal.
+  - Navigate to the project directory.
+  - Execute the following command, replacing the placeholders with your actual paths:
+```bash
+& <path_to_python>/python.exe "<path_to_repository>/Used-Cars-Scraper/scrapy_used_cars/GUI.py"
+```
+2) Using an IDE:
+  - Open the project in your preferred Integrated Development Environment (IDE) like PyCharm, VSCode, or any other that supports Python development.
+  - Navigate to GUI.py in the project file explorer.
+  - Use the Run button typically found in the toolbar or right-click the file and select Run 'GUI.py' to execute the script.
 
 ---
 
@@ -185,9 +214,9 @@ ADD how the user can use tkinter
 
 ## Team and Contact
 
-- **Marij**: MEng Aeronautical (Imperial), MSc Data Science (Brunel), ex-EY Parthenon
-- **Het**: MSc Data Science (Brunel), BSc Information Technology 
-- **George**: MSc Data Science (Brunel), BSc Economics (AUTH)
+- **Marij Qureshi**: MEng Aeronautical Engineering (Imperial), MSc Data Science (Brunel), ex-EY Parthenon
+- **Het Suhagiya**: MSc Data Science (Brunel), BSc Information Technology 
+- **Georgios Gkakos**: MSc Data Science (Brunel), BSc Economics (AUTH)
 
 For questions, feel free to reach out via GitHub issues or email any of us.
 
