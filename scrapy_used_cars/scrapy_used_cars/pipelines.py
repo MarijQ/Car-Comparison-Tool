@@ -24,7 +24,7 @@ class UsedCarsPipeline:
                 mileage NUMERIC,
                 fuel_type VARCHAR(50),
                 body_style VARCHAR(100),
-                engine_size VARCHAR(50),
+                engine_size NUMERIC,
                 hp INT,
                 transmission VARCHAR(50),
                 year INT,
