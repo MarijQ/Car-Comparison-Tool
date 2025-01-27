@@ -1,8 +1,8 @@
 # Used Cars Scraper
 
-## Website Permissions
-
-This project respects the terms and conditions for the Carwow, Cargiant and Lookers websites at the time of development. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices. For details on what is allowed and disallowed for web crawlers when using these tools, please refer to the latest site terms and robots.txt files.
+> ## Website Permissions
+>
+> This project respects the terms and conditions for the Carwow, Cargiant and Lookers websites at the time of development. The data accessed was strictly for > educational purposes, in compliance with ethical scraping practices. For details on what is allowed and disallowed for web crawlers when using these tools, > please refer to the latest site terms and robots.txt files.
 
 ## Table of Contents
 
