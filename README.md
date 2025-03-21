@@ -2,7 +2,7 @@
 
 > ## Website Permissions
 >
-> This project respects the terms and conditions for the Carwow, Cargiant and Lookers websites at the time of development. The data accessed was strictly for > educational purposes, in compliance with ethical scraping practices. For details on what is allowed and disallowed for web crawlers when using these tools, > please refer to the latest site terms and robots.txt files.
+> This project respects the terms and conditions for the Carwow, Cargiant and Lookers websites at the time of development. The data accessed was strictly for educational purposes, in compliance with ethical scraping practices. For details on what is allowed and disallowed for web crawlers when using these tools, please refer to the latest site terms and robots.txt files.
 
 ## Table of Contents
 
@@ -21,13 +21,15 @@
 
 ## Introduction
 
-In this project, we aimed to collect and analyse car listings from three websites: Carwow, Lookers, and Cargiant. Our objective was to build a database capturing key details such as model, make, engine size, and price and provide a reliable average price for the used car market in the UK, useful for both buyers and sellers. We used various technologies to scrape and process the data. Ultimately, we developed an application that allows users to input their car preferences and retrieve the average price from our database.
+Finding a fair price for a used car can be challenging, whether buying or selling. This project provides a data-driven solution by analysing listings from 3 major comparison sites: Carwow, Lookers, and Cargiant, to estimate the average market price for used cars in the UK. By collecting details such as model, make, engine size, and price, it builds a reliable pricing database that helps users make informed decisions.
+
+The python GUI application allows users to input their car preferences and instantly retrieve an estimated market price based on real listings. Various technologies are used to scrape, process, and analyse the data, ensuring that pricing insights remain accurate and up to date. This makes it a valuable tool for anyone looking to gauge the true value of a vehicle before making a purchase or a sale.
 
 ---
 
 ## Project Overview
 
-We utilise a combination of web scraping technologies and database management tools to extract and process data from targeted websites. Our workflow moves from data acquisition through scraping to data storage and user interaction via a custom application.
+A combination of web scraping technologies and database management tools is utilised to extract and process data from targeted websites. The workflow progresses from data acquisition through scraping to data storage and user interaction via a custom application.
 
 ### Websites Scraped
 
@@ -39,71 +41,75 @@ Each website offers a unique set of data related to used car listings, including
 
 ### Tech Stack
 
-- **Scrapy**:  Orchestrated the web scraping process, data processing and data storage.
-- **Selenium**: Helped us interact with dynamic content on the websites.
-- **Splash**:  Allowed us to render pages with JavaScript content in a headless browser before scraping.
-- **PostgreSQL**:  Used to store and process the scraped data.
-- **Python**:  Used to write the scraping scripts, data processing, and dashboard logic.
-- **Tkinter**: Utilised to build an application that demonstrates user's interaction with the database  
+- **Scrapy**: Orchestrates the web scraping process, data processing, and data storage.  
+- **Selenium**: Enables interaction with dynamic content on the websites.  
+- **Splash**: Renders pages with JavaScript content in a headless browser before scraping.  
+- **PostgreSQL**: Stores and processes the scraped data.  
+- **Python**: Powers the scraping scripts, data processing, and dashboard logic.  
+- **Tkinter**: Builds an application that allows user interaction with the database.
 
 ---
 
 ## Scraping and Data Collection
-We developed three spiders, each tailored to efficiently scrape data from each website:
+Three spiders were developed, each tailored to efficiently scrape data from a specific website:  
 
-**Spiders**
-- lookers.py:
+### **Spiders**  
 
-  - Tools Used: Utilizes Scrapy for scraping the bulk of car features directly from AJAX API calls, which return data in JSON format.
-  - Additional Rendering: Uses Splash to render JavaScript content on the website, enabling the scraping of additional feature lists of cars that are dynamically loaded.
+- **lookers.py**:  
+  - **Tools Used**: Utilises Scrapy to extract car features directly from AJAX API calls, returning data in JSON format.  
+  - **Additional Rendering**: Uses Splash to render JavaScript content, enabling the scraping of dynamically loaded feature lists.  
 
-- cargiant.py and carwow.py:
+- **cargiant.py** and **carwow.py**:  
+  - **Tools Used**: Employ Scrapy alongside Selenium. This combination is essential for handling complex JavaScript and HTML structures that Splash alone cannot process.  
 
-  - Tools Used: Employs Scrapy in conjunction with Selenium. This combination is crucial for handling the complex JavaScript and HTML structures found on these websites, which Splash alone could not adequately process.
-  
-**Data Standardisation**
-- To facilitate the integration of scraped data into a unified database schema, we standardised the extraction of the following features across all three websites:
+### **Data Standardisation**  
 
-  -  Basic Car Information: Make, Model, Year, Price, Mileage
-  -  Specifications: Fuel Type, Body Style, Engine Size, Horsepower (hp)
-  -  Transmission Details: Type of Transmission
-  -  Dealership Data: Name of the Dealership
-  -  Efficiency and Capacity: Miles Per Gallon (mpg), Number of Doors
-  -  Ownership History: Number of Previous Owners
-  -  Additional Details: Droplet, List of Additional Features
+To integrate scraped data into a unified database schema, the extraction of key features was standardised across all three websites:  
+
+- **Basic Car Information**: Make, Model, Year, Price, Mileage  
+- **Specifications**: Fuel Type, Body Style, Engine Size, Horsepower (hp)  
+- **Transmission Details**: Type of Transmission  
+- **Dealership Data**: Name of the Dealership  
+- **Efficiency and Capacity**: Miles Per Gallon (mpg), Number of Doors  
+- **Ownership History**: Number of Previous Owners  
+- **Additional Details**: Droplet, List of Additional Features
 
 ---
 
-## Data Storage and Preparation
-The scraped data is processed and stored in a **PostgreSQL** database.
+## **Data Storage and Preparation**  
 
-**Table's Structure and Description:**
-| Column Name      | Data Type      | Description                                   |
-|------------------|----------------|-----------------------------------------------|
-| id               | SERIAL         | Primary key, auto-increments with each entry  |
-| make             | VARCHAR(100)   | Brand of the car                              |
-| model            | VARCHAR(100)   | Model of the car                              |
-| price            | NUMERIC        | Sale price of the car                         |
-| mileage          | NUMERIC        | Total miles driven by the car                 |
-| fuel_type        | VARCHAR(50)    | Type of fuel used (e.g., Diesel, Petrol)      |
-| body_style       | VARCHAR(100)   | Style of the car body (e.g., Sedan, SUV)      |
-| engine_size      | NUMERIC        | Engine size (e.g., 2.0)                       |
-| hp               | INT            | Horsepower of the car                         |
-| transmission     | VARCHAR(50)    | Type of transmission (e.g., Manual, Automatic)|
-| year             | INT            | Year of manufacture                           |
-| dealership_name  | VARCHAR(255)   | Name of the dealership selling the car        |
-| mpg              | NUMERIC        | Miles per gallon                              |
-| n_doors          | INT            | Number of doors                               |
-| previous_owners  | INT            | Number of previous owners                     |
-| droplet          | VARCHAR(50)    | Colour of the car                             |
-| feature_list     | TEXT           | List of additional features                   |
-| last_updated     | TIMESTAMP      | Timestamp of the last update to the record    |
+The scraped data is processed and stored in a **PostgreSQL** database.  
 
-**Handling Missing Values**
-- Any missing values in the dataset were retained as is for the current implementation. Future updates may address these through appropriate imputation techniques to ensure comprehensive data analysis
-  
-**Database Interaction with Psycopg2**
-- We utilise the psycopg2 library to execute SQL-like queries directly from Python. When calculating the average price of cars, our queries are designed to consider only those car listings that fall within one standard deviation from the user-inputted value for each numeric attribute. For textual attributes, the matches must be exact.
+### **Table Structure and Description**  
+
+| Column Name      | Data Type      | Description                                   |  
+|------------------|--------------|-----------------------------------------------|  
+| id               | SERIAL       | Primary key, auto-increments with each entry  |  
+| make             | VARCHAR(100) | Brand of the car                              |  
+| model            | VARCHAR(100) | Model of the car                              |  
+| price            | NUMERIC      | Sale price of the car                         |  
+| mileage          | NUMERIC      | Total miles driven by the car                 |  
+| fuel_type        | VARCHAR(50)  | Type of fuel used (e.g., Diesel, Petrol)      |  
+| body_style       | VARCHAR(100) | Style of the car body (e.g., Sedan, SUV)      |  
+| engine_size      | NUMERIC      | Engine size (e.g., 2.0)                       |  
+| hp               | INT          | Horsepower of the car                         |  
+| transmission     | VARCHAR(50)  | Type of transmission (e.g., Manual, Automatic) |  
+| year             | INT          | Year of manufacture                           |  
+| dealership_name  | VARCHAR(255) | Name of the dealership selling the car        |  
+| mpg              | NUMERIC      | Miles per gallon                              |  
+| n_doors          | INT          | Number of doors                               |  
+| previous_owners  | INT          | Number of previous owners                     |  
+| droplet          | VARCHAR(50)  | Colour of the car                             |  
+| feature_list     | TEXT         | List of additional features                   |  
+| last_updated     | TIMESTAMP    | Timestamp of the last update to the record    |  
+
+### **Handling Missing Values**  
+
+Missing values are retained in the current implementation, as they are automatically excluded when relevant filters are applied. Future updates may introduce imputation techniques to fill these gaps and create a more complete dataset.
+
+### **Database Interaction with Psycopg2**  
+
+The **psycopg2** library is used to execute SQL-like queries directly from Python. When calculating the average price of cars, queries consider only listings within one standard deviation of the user-inputted value for each numeric attribute. For textual attributes, matches must be exact.
 
 ---
 
@@ -150,11 +156,7 @@ docker run -d -p 8052:8050 scrapinghub/splash
 - **Crawl the Spiders**
 ```bash
 scrapy crawl lookers
-```
-```bash
 scrapy crawl carwow
-```
-```bash
 scrapy crawl cargiant
 ```
 - **Run the Application**
