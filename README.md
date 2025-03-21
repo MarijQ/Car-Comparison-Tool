@@ -21,7 +21,7 @@
 
 ## Introduction
 
-Finding a fair price for a used car can be challenging, whether buying or selling. This project provides a data-driven solution by analysing listings from 3 major comparison sites: Carwow, Lookers, and Cargiant, to estimate the average market price for used cars in the UK. By collecting details such as model, make, engine size, and price, it builds a reliable pricing database that helps users make informed decisions.
+Finding a fair price for a used car can be challenging, whether buying or selling. This project provides a data-driven solution by analysing 1,000+ listings from 3 major comparison sites: Carwow, Lookers, and Cargiant, to estimate the average market price for used cars in the UK. By collecting details such as model, make, engine size, and price, it builds a reliable pricing database that helps users make informed decisions.
 
 The python GUI application allows users to input their car preferences and instantly retrieve an estimated market price based on real listings. Various technologies are used to scrape, process, and analyse the data, ensuring that pricing insights remain accurate and up to date. This makes it a valuable tool for anyone looking to gauge the true value of a vehicle before making a purchase or a sale.
 
